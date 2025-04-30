@@ -1,1 +1,15 @@
-<p>home works!</p>
+
+<div *ngIf="currentTab != 'tree'">
+<h1> مـرحــبـا ال عـمــران</h1>
+<P></P>
+<h2> اسـتـكـشـف شــجـرة العـائـلة</h2>
+<p></p>
+<button type="button" class="btn" [ngClass]="currentTab == 'tree'?'btn-success':'btn-secondary'" (click)="showPage('tree')">
+  من هـنا
+</button>
+</div>
+
+
+<div class="col-12" *ngIf="currentTab == 'tree'">
+  <app-tree></app-tree>
+</div>

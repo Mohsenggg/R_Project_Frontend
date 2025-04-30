@@ -1,0 +1,96 @@
+/* Overall page background */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #e0f7f1; /* mint green background */
+  color: #333;
+  text-align: center;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
+/* Fade and slide animation */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Gold underline effect */
+.title-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.title-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0;
+  height: 4px;
+  background-color: #bfa035; /* gold */
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.title-underline:hover::after {
+  width: 100%;
+}
+
+/* Main title */
+h1 {
+  color: #006b50; /* dark mint */
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  animation: fadeSlideIn 2s ease forwards;
+}
+
+/* Subtitle */
+h2 {
+  color: #bfa035; /* gold */
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  animation: fadeSlideIn 8s ease ;
+  animation-delay: 0s;
+}
+
+/* Button styling */
+button.btn {
+  background-color: #bfa035; /* gold */
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  animation: fadeSlideIn 8s ease ;
+  animation-delay: 0s;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+button.btn:hover {
+  background-color: #d4af37;
+  transform: scale(1.05);
+}
+
+/* Show button after load animation */
+button.btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Remove extra spacing from empty <p> tags */
+p:empty {
+  display: none;
+}
