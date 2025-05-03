@@ -51,10 +51,32 @@ export class TreeComponent implements OnInit {
 
 
      ngOnInit() {
-          this.familyTree = [
-               { id: 1, name: 'Grandparent', children: [], x: 300, y: 50 }
-          ];
+
+
+          // this.familyTree = [
+          //      { id: 1, name: 'Grandparent', children: [], x: 300, y: 50 }
+          // ];
+
+          this.treeService.loadTree().then((tree) => {
+            this.familyTree = tree;  // Set the family tree to the loaded data
+          });
      }
+
+
+     saveMessage = '';
+
+
+     onSave() {
+      this.treeService.saveTree(this.familyTree)
+        .then(() => {
+          this.saveMessage = '✅ Tree saved successfully!';
+          setTimeout(() => this.saveMessage = '', 3000); // Hide after 3 sec
+        })
+        .catch(error => {
+          console.error('Error saving tree:', error);
+          this.saveMessage = '❌ Failed to save tree.';
+        });
+    }
 
 
      //=======================================================================

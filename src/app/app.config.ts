@@ -5,6 +5,10 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +17,19 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom(BrowserAnimationsModule),
-    provideClientHydration()
+    provideClientHydration(),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
+
+
+// ✅ Firebase Initialization
+
 
   ]
   };
+
+
+
+// Add other Firebase services here if needed, e.g.:
+// provideFirestore(() => getFirestore()),
+// provideDatabase(() => getDatabase()),
