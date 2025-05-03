@@ -1,11 +1,13 @@
 /* Overall page background */
+
+
 :host {
   display: block;
   min-height: 100vh;
   background-color: #e0f7f1; /* mint green background */
   color: #333;
   text-align: center;
-  padding: 2rem;
+  /* padding: 2rem; */
   font-family: 'Arial', sans-serif;
   overflow: hidden;
 }

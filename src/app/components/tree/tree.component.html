@@ -1,7 +1,3 @@
-<p>family-tree works!</p>
-<p>Hiiiii</p>
-
-
 <div class="tree-container">
        <!-- Render the root members -->
        <ng-container *ngFor="let member of familyTree">
@@ -32,47 +28,48 @@
                 class="edit-panel"
                 *ngIf="selectedMember?.id === member.id"
                 [style.left.px]="member.x + 120"
-                [style.top.px]="member.y"
+                [style.top.px]="member.y + 10"
                 [@fadeInOut]="'in'"
                 >
-              <h4>Edit Member</h4>
+              <h4>تعديل</h4>
               <label>
-                     Name:
+                     الاسم
                      <input [(ngModel)]="newName" />
-                     <button (click)="updateName()">Update Name</button>
-
+                     <button (click)="updateName()">تعديل الاسم</button>
               </label>
 
               <div style="margin-top: 5px">
                      <label>
-                            Add Child:
+                            اضافة ابن
                             <input [(ngModel)]="childName" />
-                            <button (click)="addNewChild()">Add Child</button>
+                            <button (click)="addNewChild()">اضافة</button>
                      </label>
               </div>
               <div style="margin-top: 5px">
                 <label>
                        <p></p>
-                       <button (click)="removeSelectedChild()">Remove Member</button>
+                       <button (click)="removeSelectedChild()">حذف</button>
                 </label>
              </div>
 
              <div *ngIf="selectedMember && selectedMember.children && selectedMember.children.length > 0">
-              <h5>Children:</h5>
-              <ul>
-                <li *ngFor="let c of selectedMember.children">{{ c.name }}</li>
-              </ul>
-            </div>s
+              <h5>الأبناء</h5>
+              <select [(ngModel)]="selectedMember">
+                <option *ngFor="let c of selectedMember.children" [value]="c.id">
+                  {{ c.name }}
+                </option>
+              </select>
+            </div>
        </div>
        <!-- CONNECTION LINES -->
        <svg class="tree-svg">
               <line
                      *ngFor="let child of member.children"
                      [attr.x1]="member.x + 50"
-                     [attr.y1]="member.y + 50"
+                     [attr.y1]="member.y + 83"
                      [attr.x2]="child.x + 50"
                      [attr.y2]="child.y"
-                     stroke="black"
+                     stroke= #d4af37
                      stroke-width="2"
               />
        </svg>
