@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/R_Front_Project",
+    "public": "dist/r-front-project/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
