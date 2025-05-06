@@ -70,6 +70,7 @@ export class TreeComponent implements OnInit {
       this.treeService.saveTree(this.familyTree)
         .then(() => {
           this.saveMessage = '✅ Tree saved successfully!';
+          alert("✅ Tree saved successfully!")
           setTimeout(() => this.saveMessage = '', 3000); // Hide after 3 sec
         })
         .catch(error => {

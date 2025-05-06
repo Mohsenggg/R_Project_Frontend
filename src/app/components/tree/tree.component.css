@@ -139,6 +139,7 @@ button {
   margin-top: 0.3rem;
 }
 
-.edit-panel button:hover {
-  background-color: #d4af37;
+ button:hover {
+  background-color: #16bf5a;
 }
+
