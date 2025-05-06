@@ -1,3 +1,7 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
 <div class="tree-container">
        <!-- Render the root members -->
        <ng-container *ngFor="let member of familyTree">
@@ -15,9 +19,10 @@
 
        <div
               class="member-card"
-              [attr.data-id]="member.id"
-              [style.left.px]="member.x"
-              [style.top.px]="member.y"
+              [attr.data-id]="member.id"\
+              [style.left.%]="member.xPercent"
+              [style.top.%]="member.yPercent"
+
               (mousedown)="startDrag($event, member)"
               [class.selected]="selectedMember?.id === member.id"
        >
