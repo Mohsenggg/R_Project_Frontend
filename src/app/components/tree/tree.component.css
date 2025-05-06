@@ -127,3 +127,18 @@
   font-size: 0.9rem;
   margin-bottom: 0.3rem;
 }
+
+button {
+  background-color: #bfa035; /* gold */
+  border: none;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0.3rem;
+}
+
+.edit-panel button:hover {
+  background-color: #d4af37;
+}
