@@ -41,6 +41,15 @@ export class TreeComponent implements OnInit {
      newName: string = '';
      childName: string = '';
 
+     scale = 1;
+     translateX = 0;
+     translateY = 0;
+     private isPanning = false;
+     private startX = 0;
+     private startY = 0;
+     private lastScale = 1;
+     transformStyle = 'translate(0px, 0px) scale(1)';
+
 
      //============================||  Initialize ||============================
 
@@ -58,7 +67,7 @@ export class TreeComponent implements OnInit {
           // ];
 
           this.treeService.loadTree().then((tree) => {
-            this.familyTree = tree;  // Set the family tree to the loaded data
+               this.familyTree = tree;  // Set the family tree to the loaded data
           });
      }
 
@@ -67,17 +76,17 @@ export class TreeComponent implements OnInit {
 
 
      onSave() {
-      this.treeService.saveTree(this.familyTree)
-        .then(() => {
-          this.saveMessage = '✅ Tree saved successfully!';
-          alert("✅ Tree saved successfully!")
-          setTimeout(() => this.saveMessage = '', 3000); // Hide after 3 sec
-        })
-        .catch(error => {
-          console.error('Error saving tree:', error);
-          this.saveMessage = '❌ Failed to save tree.';
-        });
-    }
+          this.treeService.saveTree(this.familyTree)
+               .then(() => {
+                    this.saveMessage = '✅ Tree saved successfully!';
+                    alert("✅ Tree saved successfully!")
+                    setTimeout(() => this.saveMessage = '', 3000); // Hide after 3 sec
+               })
+               .catch(error => {
+                    console.error('Error saving tree:', error);
+                    this.saveMessage = '❌ Failed to save tree.';
+               });
+     }
 
 
      //=======================================================================
@@ -88,17 +97,17 @@ export class TreeComponent implements OnInit {
 
      startDrag(event: MouseEvent | TouchEvent, member: FamilyMember): void {
 
-      const isTouch = event instanceof TouchEvent;
-      const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
-      const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
+          const isTouch = event instanceof TouchEvent;
+          const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
+          const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
 
-      this.offsetX = clientX - member.x;
-      this.offsetY = clientY - member.y;
-      this.draggingMember = member;
+          this.offsetX = clientX - member.x;
+          this.offsetY = clientY - member.y;
+          this.draggingMember = member;
 
-      if (isTouch) {
-        event.preventDefault(); // Prevent scrolling during touch drag
-      }
+          if (isTouch) {
+               event.preventDefault(); // Prevent scrolling during touch drag
+          }
      }
 
      @HostListener('document:mousemove', ['$event'])
@@ -145,7 +154,52 @@ export class TreeComponent implements OnInit {
           this.newName = member.name;
      }
 
+     // ----------------- ZOOM & Scroll ----------------------
+     startPan(event: MouseEvent | TouchEvent): void {
+      this.isPanning = true;
 
+      const point = event instanceof TouchEvent ? event.touches[0] : event;
+      this.startX = point.clientX - this.translateX;
+      this.startY = point.clientY - this.translateY;
+
+      if (event instanceof TouchEvent && event.touches.length === 2) {
+        this.lastScale = this.getDistance(event.touches[0], event.touches[1]) / this.scale;
+      }
+    }
+
+    onPan(event: MouseEvent | TouchEvent): void {
+      if (!this.isPanning) return;
+
+      if (event instanceof TouchEvent) {
+        if (event.touches.length === 1) {
+          const touch = event.touches[0];
+          this.translateX = touch.clientX - this.startX;
+          this.translateY = touch.clientY - this.startY;
+        } else if (event.touches.length === 2) {
+          const newDistance = this.getDistance(event.touches[0], event.touches[1]);
+          this.scale = newDistance / this.lastScale;
+        }
+      } else {
+        this.translateX = event.clientX - this.startX;
+        this.translateY = event.clientY - this.startY;
+      }
+
+      this.updateTransform();
+    }
+
+    endPan(): void {
+      this.isPanning = false;
+    }
+
+    updateTransform(): void {
+      this.transformStyle = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+    }
+
+    private getDistance(touch1: Touch, touch2: Touch): number {
+      const dx = touch2.clientX - touch1.clientX;
+      const dy = touch2.clientY - touch1.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
 
      //=======================================================================
      //============================||  Features ||============================
