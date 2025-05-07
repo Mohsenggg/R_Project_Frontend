@@ -22,7 +22,7 @@
 .member-card {
   position: absolute;
   width: 100px;
-  height: 80px;
+  height: 100px;
   background-color: white;
   border: 2px solid #bfa035; /* gold border */
   border-radius: 30%;
