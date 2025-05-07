@@ -173,11 +173,20 @@ export class TreeComponent implements OnInit {
       this.startX = point.clientX - this.translateX;
       this.startY = point.clientY - this.translateY;
 
-      if (event instanceof TouchEvent && event.touches.length === 2) {
-        // this.lastScale = this.getDistance(event.touches[0], event.touches[1]) / this.scale;
-        this.initialDistance = this.getDistance(event.touches[0], event.touches[1]);
-        this.initialScale = this.scale;
+      // if (event instanceof TouchEvent && event.touches.length === 2) {
+      //   // this.lastScale = this.getDistance(event.touches[0], event.touches[1]) / this.scale;
+      //   this.initialDistance = this.getDistance(event.touches[0], event.touches[1]);
+      //   this.initialScale = this.scale;
 
+      if (event instanceof TouchEvent && event.touches.length === 2) {
+        const newDistance = this.getDistance(event.touches[0], event.touches[1]);
+        const scaleRatio = newDistance / this.initialDistance;
+        this.scale = this.initialScale * scaleRatio;
+
+        // Clamp the scale
+        const minScale = 0.5;
+        const maxScale = 3;
+        this.scale = Math.max(minScale, Math.min(this.scale, maxScale));
       }
     }
 
