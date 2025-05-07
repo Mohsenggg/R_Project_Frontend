@@ -12,7 +12,7 @@
 /* Tree container (relative for positioning) */
 .tree-container {
   position: relative;
-  width: 100%;
+  width: 20%;
   height: 100vh;
   background-image: linear-gradient(#bfa035, #00b894);
   overflow: auto;
