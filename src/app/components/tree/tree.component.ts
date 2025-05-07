@@ -47,13 +47,13 @@ export class TreeComponent implements OnInit {
      scale = 1;
      translateX = 0;
      translateY = 0;
+
      private isPanning = false;
      private startX = 0;
      private startY = 0;
-    //  private lastScale = 1;
-     private initialDistance = 0;
-     private initialScale = 0.2;
 
+     private initialDistance = 0;
+     private initialScale = 1;  // <-- Match the starting scale
      transformStyle = 'translate(0px, 0px) scale(1)';
 
 
@@ -166,71 +166,59 @@ export class TreeComponent implements OnInit {
      }
 
      // ----------------- ZOOM & Scroll ----------------------
-     startPan(event: MouseEvent | TouchEvent): void {
-      this.isPanning = true;
 
-      const point = event instanceof TouchEvent ? event.touches[0] : event;
-      this.startX = point.clientX - this.translateX;
-      this.startY = point.clientY - this.translateY;
+startPan(event: MouseEvent | TouchEvent): void {
+  this.isPanning = true;
 
-      // if (event instanceof TouchEvent && event.touches.length === 2) {
-      //   // this.lastScale = this.getDistance(event.touches[0], event.touches[1]) / this.scale;
-      //   this.initialDistance = this.getDistance(event.touches[0], event.touches[1]);
-      //   this.initialScale = this.scale;
+  const point = event instanceof TouchEvent ? event.touches[0] : event;
+  this.startX = point.clientX - this.translateX;
+  this.startY = point.clientY - this.translateY;
 
-      if (event instanceof TouchEvent && event.touches.length === 2) {
-        const newDistance = this.getDistance(event.touches[0], event.touches[1]);
-        const scaleRatio = newDistance / this.initialDistance;
-        this.scale = this.initialScale * scaleRatio;
+  if (event instanceof TouchEvent && event.touches.length === 2) {
+    this.initialDistance = this.getDistance(event.touches[0], event.touches[1]);
+    this.initialScale = this.scale;  // ✅ use current scale as starting point
+  }
+}
 
-        // Clamp the scale
-        const minScale = 0.5;
-        const maxScale = 3;
-        this.scale = Math.max(minScale, Math.min(this.scale, maxScale));
-      }
+onPan(event: MouseEvent | TouchEvent): void {
+  if (!this.isPanning) return;
+
+  if (event instanceof TouchEvent) {
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+      this.translateX = touch.clientX - this.startX;
+      this.translateY = touch.clientY - this.startY;
+    } else if (event.touches.length === 2) {
+      const newDistance = this.getDistance(event.touches[0], event.touches[1]);
+      const scaleRatio = newDistance / this.initialDistance;
+      this.scale = this.initialScale * scaleRatio;
+
+      // ✅ Clamp scale (allows zoom out & in)
+      const minScale = 0.2;
+      const maxScale = 3;
+      this.scale = Math.max(minScale, Math.min(this.scale, maxScale));
     }
+  } else {
+    this.translateX = event.clientX - this.startX;
+    this.translateY = event.clientY - this.startY;
+  }
 
-    onPan(event: MouseEvent | TouchEvent): void {
-      if (!this.isPanning) return;
+  this.updateTransform();
+}
 
-      if (event instanceof TouchEvent) {
-        if (event.touches.length === 1) {
-          const touch = event.touches[0];
-          this.translateX = touch.clientX - this.startX;
-          this.translateY = touch.clientY - this.startY;
-        } else if (event.touches.length === 2) {
-          // const newDistance = this.getDistance(event.touches[0], event.touches[1]);
-          // this.scale = newDistance / this.lastScale;
+endPan(): void {
+  this.isPanning = false;
+}
 
-          const newDistance = this.getDistance(event.touches[0], event.touches[1]);
+updateTransform(): void {
+  this.transformStyle = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+}
 
-          const scaleRatio = newDistance / this.initialDistance;
-          this.scale = this.initialScale * scaleRatio;
-
-        }
-      } else {
-        this.translateX = event.clientX - this.startX;
-        this.translateY = event.clientY - this.startY;
-      }
-
-      this.updateTransform();
-    }
-
-    endPan(): void {
-      this.isPanning = false;
-    }
-
-    updateTransform(): void {
-      this.transformStyle = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
-    }
-
-    private getDistance(touch1: Touch, touch2: Touch): number {
-      const dx = touch2.clientX - touch1.clientX;
-      const dy = touch2.clientY - touch1.clientY;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-
+private getDistance(touch1: Touch, touch2: Touch): number {
+  const dx = touch2.clientX - touch1.clientX;
+  const dy = touch2.clientY - touch1.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
 
 // ---------------- using mouse
 
