@@ -2,7 +2,9 @@
 
 
 
-<div class="tree-container">
+<div
+class="tree-container"
+>
      <!-- Render the root members -->
      <ng-container *ngFor="let member of familyTree">
 
@@ -25,12 +27,12 @@
       [style.top.px]="member.y"
       (mousedown)="startDrag($event, member)"
       (touchstart)="startDrag($event, member)"
-     [class.selected]="selectedMember?.id === member.id"
+      [class.selected]="selectedMember?.id === member.id"
 
-     (touchstart)="startPan($event)"
-     (touchmove)="onPan($event)"
-     (touchend)="endPan()"
-     [style.transform]="transformStyle"
+      (touchstart)="startPan($event)"
+      (touchmove)="onPan($event)"
+      (touchend)="endPan()"
+      [style.transform]="transformStyle"
 
      >
           <p>{{ member.name }}</p>

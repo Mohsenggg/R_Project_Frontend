@@ -47,7 +47,10 @@ export class TreeComponent implements OnInit {
      private isPanning = false;
      private startX = 0;
      private startY = 0;
-     private lastScale = 1;
+    //  private lastScale = 1;
+     private initialDistance = 0;
+     private initialScale = 1;
+
      transformStyle = 'translate(0px, 0px) scale(1)';
 
 
@@ -163,7 +166,10 @@ export class TreeComponent implements OnInit {
       this.startY = point.clientY - this.translateY;
 
       if (event instanceof TouchEvent && event.touches.length === 2) {
-        this.lastScale = this.getDistance(event.touches[0], event.touches[1]) / this.scale;
+        // this.lastScale = this.getDistance(event.touches[0], event.touches[1]) / this.scale;
+        this.initialDistance = this.getDistance(event.touches[0], event.touches[1]);
+        this.initialScale = this.scale;
+
       }
     }
 
@@ -176,8 +182,14 @@ export class TreeComponent implements OnInit {
           this.translateX = touch.clientX - this.startX;
           this.translateY = touch.clientY - this.startY;
         } else if (event.touches.length === 2) {
+          // const newDistance = this.getDistance(event.touches[0], event.touches[1]);
+          // this.scale = newDistance / this.lastScale;
+
           const newDistance = this.getDistance(event.touches[0], event.touches[1]);
-          this.scale = newDistance / this.lastScale;
+
+          const scaleRatio = newDistance / this.initialDistance;
+          this.scale = this.initialScale * scaleRatio;
+
         }
       } else {
         this.translateX = event.clientX - this.startX;
@@ -200,6 +212,30 @@ export class TreeComponent implements OnInit {
       const dy = touch2.clientY - touch1.clientY;
       return Math.sqrt(dx * dx + dy * dy);
     }
+
+// ---------------- using mouse
+
+// @HostListener('wheel', ['$event'])
+// onWheel(event: WheelEvent): void {
+//   event.preventDefault();
+
+//   const zoomIntensity = 0.1;
+//   const direction = event.deltaY > 0 ? -1 : 1;
+//   const newScale = this.scale + direction * zoomIntensity;
+
+//   // Limit zoom scale between 0.5x and 2x (you can adjust these)
+//   this.scale = Math.min(Math.max(newScale, 0.5), 2);
+
+//   // Optional: Zoom relative to mouse position for better UX
+//   const rect = (event.target as HTMLElement).getBoundingClientRect();
+//   const offsetX = event.clientX - rect.left;
+//   const offsetY = event.clientY - rect.top;
+
+//   this.translateX -= offsetX * zoomIntensity * direction;
+//   this.translateY -= offsetY * zoomIntensity * direction;
+
+//   this.updateTransform();
+// }
 
      //=======================================================================
      //============================||  Features ||============================
