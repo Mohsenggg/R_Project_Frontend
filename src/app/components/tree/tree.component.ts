@@ -1,6 +1,6 @@
 
 
-import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,6 +31,9 @@ import { TreeService } from '../../srevices/tree.service';
 
 export class TreeComponent implements OnInit {
 
+
+  @ViewChild('treeContainer', { static: false }) treeContainerRef!: ElementRef;
+
      familyTree: FamilyMember[] = [];
      draggingMember: FamilyMember | null = null;
      selectedMember: FamilyMember | null = null;
@@ -49,7 +52,7 @@ export class TreeComponent implements OnInit {
      private startY = 0;
     //  private lastScale = 1;
      private initialDistance = 0;
-     private initialScale = 1;
+     private initialScale = 0.2;
 
      transformStyle = 'translate(0px, 0px) scale(1)';
 
@@ -64,15 +67,20 @@ export class TreeComponent implements OnInit {
 
      ngOnInit() {
 
+        // this.familyTree = [
+            //      { id: 1, name: 'Grandparent', children: [], x: 300, y: 50 }
+            // ];
 
-          // this.familyTree = [
-          //      { id: 1, name: 'Grandparent', children: [], x: 300, y: 50 }
-          // ];
+      this.treeService.loadTree().then((tree) => {
+        this.familyTree = tree;
 
-          this.treeService.loadTree().then((tree) => {
-               this.familyTree = tree;  // Set the family tree to the loaded data
-          });
-     }
+        // Wait until next frame after DOM updates
+      //   requestAnimationFrame(() => {
+      //     this.centerTree();
+      //   });
+      });
+    }
+
 
 
      saveMessage = '';
@@ -212,6 +220,8 @@ export class TreeComponent implements OnInit {
       const dy = touch2.clientY - touch1.clientY;
       return Math.sqrt(dx * dx + dy * dy);
     }
+
+
 
 // ---------------- using mouse
 

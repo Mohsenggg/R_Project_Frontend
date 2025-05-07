@@ -3,7 +3,8 @@
 
 
 <div
-class="tree-container"
+ #treeContainer class="tree-container"
+
 >
      <!-- Render the root members -->
      <ng-container *ngFor="let member of familyTree">
@@ -34,7 +35,7 @@ class="tree-container"
       (touchend)="endPan()"
       [style.transform]="transformStyle"
 
-     >
+      >
           <p>{{ member.name }}</p>
      </div>
 
