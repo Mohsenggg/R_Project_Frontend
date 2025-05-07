@@ -18,7 +18,12 @@
 
 
 <!-- Template for family member card -->
-<ng-template #renderMember let-member>
+<ng-template #renderMember let-member
+(touchstart)="startPan($event)"
+(touchmove)="onPan($event)"
+(touchend)="endPan()"
+[style.transform]="transformStyle"
+>
 
      <div
 
@@ -30,10 +35,7 @@
       (touchstart)="startDrag($event, member)"
       [class.selected]="selectedMember?.id === member.id"
 
-      (touchstart)="startPan($event)"
-      (touchmove)="onPan($event)"
-      (touchend)="endPan()"
-      [style.transform]="transformStyle"
+
 
       >
           <p>{{ member.name }}</p>
