@@ -23,8 +23,10 @@
       [attr.data-id]="member.id"
       [style.left.px]="member.x"
       [style.top.px]="member.y"
-
-     (mousedown)="startDrag($event, member)" [class.selected]="selectedMember?.id === member.id">
+      (mousedown)="startDrag($event, member)"
+      (touchstart)="startDrag($event, member)"
+     [class.selected]="selectedMember?.id === member.id"
+     >
           <p>{{ member.name }}</p>
      </div>
 

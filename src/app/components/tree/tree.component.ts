@@ -86,14 +86,24 @@ export class TreeComponent implements OnInit {
 
      // ----------------- Drag & Drop ----------------------
 
-     startDrag(event: MouseEvent, member: FamilyMember): void {
-          this.draggingMember = member;
-          this.offsetX = event.clientX - member.x;
-          this.offsetY = event.clientY - member.y;
+     startDrag(event: MouseEvent | TouchEvent, member: FamilyMember): void {
+
+      const isTouch = event instanceof TouchEvent;
+      const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
+      const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
+
+      this.offsetX = clientX - member.x;
+      this.offsetY = clientY - member.y;
+      this.draggingMember = member;
+
+      if (isTouch) {
+        event.preventDefault(); // Prevent scrolling during touch drag
+      }
      }
 
      @HostListener('document:mousemove', ['$event'])
-     onMouseMove(event: MouseEvent): void {
+     @HostListener('document:touchmove', ['$event'])
+     onMouseMove(event: MouseEvent | TouchEvent): void {
           if (this.draggingMember) {
                this.treeService.moveMember(this.draggingMember, event, this.offsetX, this.offsetY);
                this.cdr.detectChanges();
@@ -101,6 +111,7 @@ export class TreeComponent implements OnInit {
      }
 
      @HostListener('document:mouseup')
+     @HostListener('document:touchend')
      stopDrag(): void {
           this.draggingMember = null;
      }

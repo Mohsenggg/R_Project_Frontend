@@ -76,10 +76,13 @@ async loadTree(): Promise<FamilyMember[]> {
 
      //----------------------------------------------------------------
 
-     moveMember(member: FamilyMember, event: MouseEvent, offsetX: number, offsetY: number): void {
-          member.x = event.clientX - offsetX;
-          member.y = event.clientY - offsetY;
-     }
+     moveMember(member: FamilyMember, event: MouseEvent | TouchEvent, offsetX: number, offsetY: number): void {
+      const clientX = event instanceof TouchEvent ? event.touches[0].clientX : event.clientX;
+      const clientY = event instanceof TouchEvent ? event.touches[0].clientY : event.clientY;
+
+      member.x = clientX - offsetX;
+      member.y = clientY - offsetY;
+    }
 
 
      //===================================================================
