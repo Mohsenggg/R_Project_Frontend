@@ -1,47 +1,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-
-<div
- #treeContainer class="tree-container"
-
->
+<div #treeContainer class="tree-container">
      <!-- Render the root members -->
      <ng-container *ngFor="let member of familyTree">
-
           <ng-container *ngTemplateOutlet="renderMember;
               context: { $implicit: member }"></ng-container>
-
      </ng-container>
 </div>
 
 
-
 <!-- Template for family member card -->
-<ng-template #renderMember let-member
+<ng-template #renderMember let-member>
 
->
-
-     <div
-
-     class="member-card"
-      [attr.data-id]="member.id"
-      [style.left.px]="member.x"
-      [style.top.px]="member.y"
-      (mousedown)="startDrag($event, member)"
-      (touchstart)="startDrag($event, member)"
-      [class.selected]="selectedMember?.id === member.id"
-
-
-
-      >
+     <div class="member-card" [attr.data-id]="member.id"
+          [style.left.px]="member.x" [style.top.px]="member.y"
+          (mousedown)="startDrag($event, member)"
+          (touchstart)="startDrag($event, member)"
+          [class.selected]="selectedMember?.id === member.id">
           <p>{{ member.name }}</p>
+          <!-- Add Member رحمه الله for died -->
      </div>
 
      <!-- EDIT PANEL -->
-     <div class="edit-panel" *ngIf="selectedMember?.id === member.id"
-          [style.left.px]="member.x + 120"
-          [style.top.px]="member.y + 10"
+     <div class="edit-panel"
+          *ngIf="selectedMember?.id === member.id"
+          [style.left.px]="member.x + 120"[style.top.px]="member.y + 10"
           [@fadeInOut]="'in'">
 
           <h4>تعديل</h4>
@@ -76,12 +59,13 @@
      </div>
      <!-- CONNECTION LINES -->
      <svg class="tree-svg">
-          <line *ngFor="let child of member.children" [attr.x1]="member.x + 50" [attr.y1]="member.y + 83"
+          <line *ngFor="let child of member.children" [attr.x1]="member.x + 50" [attr.y1]="member.y + 105"
                [attr.x2]="child.x + 50" [attr.y2]="child.y" stroke=#d4af37 stroke-width="2" />
      </svg>
      <!-- RENDER CHILDREN RECURSIVELY -->
      <ng-container *ngFor="let child of member.children">
-          <ng-container *ngTemplateOutlet="renderMember; context: { $implicit: child }">
+          <ng-container *ngTemplateOutlet="renderMember;
+          context: { $implicit: child }">
           </ng-container>
      </ng-container>
 

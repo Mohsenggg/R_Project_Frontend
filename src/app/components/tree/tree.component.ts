@@ -32,7 +32,7 @@ import { TreeService } from '../../srevices/tree.service';
 export class TreeComponent implements OnInit {
 
 
-  @ViewChild('treeContainer', { static: false }) treeContainerRef!: ElementRef;
+     @ViewChild('treeContainer', { static: false }) treeContainerRef!: ElementRef;
 
      familyTree: FamilyMember[] = [];
      draggingMember: FamilyMember | null = null;
@@ -43,18 +43,7 @@ export class TreeComponent implements OnInit {
 
      newName: string = '';
      childName: string = '';
-
-    //  scale = 1;
-    //  translateX = 0;
-    //  translateY = 0;
-
-    //  private isPanning = false;
-    //  private startX = 0;
-    //  private startY = 0;
-
-    //  private initialDistance = 0;
-    //  private initialScale = 1;  // <-- Match the starting scale
-    //  transformStyle = 'translate(0px, 0px) scale(1)';
+     saveMessage = '';
 
 
      //============================||  Initialize ||============================
@@ -67,24 +56,10 @@ export class TreeComponent implements OnInit {
 
      ngOnInit() {
 
-        // this.familyTree = [
-            //      { id: 1, name: 'Grandparent', children: [], x: 300, y: 50 }
-            // ];
-
-      this.treeService.loadTree().then((tree) => {
-        this.familyTree = tree;
-
-        // Wait until next frame after DOM updates
-      //   requestAnimationFrame(() => {
-      //     this.centerTree();
-      //   });
-      });
-    }
-
-
-
-     saveMessage = '';
-
+          this.treeService.loadTree().then((tree) => {
+               this.familyTree = tree;
+          });
+     }
 
      onSave() {
           this.treeService.saveTree(this.familyTree)
@@ -139,7 +114,7 @@ export class TreeComponent implements OnInit {
      // ----------------- selection ----------------------
 
      @HostListener('document:dblclick', ['$event'])
-     onDoubleClick(event: MouseEvent): void {
+     onDoubleClick(event: MouseEvent | TouchEvent): void {
           const target = event.target as HTMLElement;
           const memberCard = target.closest('.member-card');
           if (memberCard) {
@@ -152,7 +127,7 @@ export class TreeComponent implements OnInit {
      }
 
      @HostListener('document:click', ['$event'])
-     onSingleClick(event: MouseEvent): void {
+     onSingleClick(event: MouseEvent | TouchEvent): void {
           const target = event.target as HTMLElement;
           const isClickOutside = !target.closest('.edit-panel') && !target.closest('.member-card');
           if (isClickOutside) {
@@ -167,82 +142,13 @@ export class TreeComponent implements OnInit {
 
      // ----------------- ZOOM & Scroll ----------------------
 
-// startPan(event: MouseEvent | TouchEvent): void {
-//   this.isPanning = true;
 
-//   const point = event instanceof TouchEvent ? event.touches[0] : event;
-//   this.startX = point.clientX - this.translateX;
-//   this.startY = point.clientY - this.translateY;
+     private getDistance(touch1: Touch, touch2: Touch): number {
+          const dx = touch2.clientX - touch1.clientX;
+          const dy = touch2.clientY - touch1.clientY;
+          return Math.sqrt(dx * dx + dy * dy);
+     }
 
-//   if (event instanceof TouchEvent && event.touches.length === 2) {
-//     this.initialDistance = this.getDistance(event.touches[0], event.touches[1]);
-//     this.initialScale = this.scale;  // ✅ use current scale as starting point
-//   }
-// }
-
-// onPan(event: MouseEvent | TouchEvent): void {
-//   if (!this.isPanning) return;
-
-//   if (event instanceof TouchEvent) {
-//     if (event.touches.length === 1) {
-//       const touch = event.touches[0];
-//       this.translateX = touch.clientX - this.startX;
-//       this.translateY = touch.clientY - this.startY;
-//     } else if (event.touches.length === 2) {
-//       const newDistance = this.getDistance(event.touches[0], event.touches[1]);
-//       const scaleRatio = newDistance / this.initialDistance;
-//       this.scale = this.initialScale * scaleRatio;
-
-//       // ✅ Clamp scale (allows zoom out & in)
-//       const minScale = 0.2;
-//       const maxScale = 3;
-//       this.scale = Math.max(minScale, Math.min(this.scale, maxScale));
-//     }
-//   } else {
-//     this.translateX = event.clientX - this.startX;
-//     this.translateY = event.clientY - this.startY;
-//   }
-
-//   this.updateTransform();
-// }
-
-// endPan(): void {
-//   this.isPanning = false;
-// }
-
-// updateTransform(): void {
-//   this.transformStyle = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
-// }
-
-private getDistance(touch1: Touch, touch2: Touch): number {
-  const dx = touch2.clientX - touch1.clientX;
-  const dy = touch2.clientY - touch1.clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-// ---------------- using mouse
-
-// @HostListener('wheel', ['$event'])
-// onWheel(event: WheelEvent): void {
-//   event.preventDefault();
-
-//   const zoomIntensity = 0.1;
-//   const direction = event.deltaY > 0 ? -1 : 1;
-//   const newScale = this.scale + direction * zoomIntensity;
-
-//   // Limit zoom scale between 0.5x and 2x (you can adjust these)
-//   this.scale = Math.min(Math.max(newScale, 0.5), 2);
-
-//   // Optional: Zoom relative to mouse position for better UX
-//   const rect = (event.target as HTMLElement).getBoundingClientRect();
-//   const offsetX = event.clientX - rect.left;
-//   const offsetY = event.clientY - rect.top;
-
-//   this.translateX -= offsetX * zoomIntensity * direction;
-//   this.translateY -= offsetY * zoomIntensity * direction;
-
-//   this.updateTransform();
-// }
 
      //=======================================================================
      //============================||  Features ||============================
