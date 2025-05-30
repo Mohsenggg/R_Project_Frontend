@@ -143,6 +143,59 @@ export class TreeComponent implements OnInit {
     this.newName = member.name;
   }
 
+  private lastTapTime = 0;
+  private doubleTapThreshold = 300; // milliseconds
+
+  @HostListener('document:touchstart', ['$event'])
+  onTouchStart(event: TouchEvent): void {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - this.lastTapTime;
+
+    if (tapLength < this.doubleTapThreshold && tapLength > 0) {
+      // Detected double tap
+      const target = event.target as HTMLElement;
+      const memberCard = target.closest('.member-card');
+      if (memberCard) {
+        const memberId = Number(memberCard.getAttribute('data-id'));
+        const member = this.treeService.findMemberById(this.familyTree, memberId);
+        if (member) {
+          this.assignSelectedMember(member);
+        }
+      }
+      event.preventDefault(); // Prevent default zoom on double tap
+    }
+
+    this.lastTapTime = currentTime;
+  }
+
+
+  // longPressTimeout: any = null;
+
+  // @HostListener('touchstart', ['$event'])
+  // onTouchStart(event: TouchEvent): void {
+  //   const target = event.target as HTMLElement;
+  //   const memberCard = target.closest('.member-card');
+
+  //   if (memberCard) {
+  //     this.longPressTimeout = setTimeout(() => {
+  //       const memberId = Number(memberCard.getAttribute('data-id'));
+  //       const member = this.treeService.findMemberById(this.familyTree, memberId);
+  //       if (member) {
+  //         this.assignSelectedMember(member);
+  //         this.cdr.detectChanges(); // Ensure UI updates
+  //       }
+  //     }, 1500); // 500ms = long press
+  //   }
+  // }
+
+  // @HostListener('touchend')
+  // @HostListener('touchcancel')
+  // onTouchEnd(): void {
+  //   clearTimeout(this.longPressTimeout);
+  // }
+
+
+
   // ----------------- ZOOM & Scroll ----------------------
 
 
