@@ -158,15 +158,18 @@
 
 
 .zoom-controls button {
-  background-color: #fff; /* gold */
+  background-color: #fff;
   border: none;
   color: #bfa035;
-  padding: 0.4rem 0.8rem;
-  margin: 5px;
+  padding: 0.5rem 1.5rem;
+  margin: 1.5rem;
   border-radius: 5px;
+  font-size: 3rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
+
 
 
 /* Children list in edit panel */
