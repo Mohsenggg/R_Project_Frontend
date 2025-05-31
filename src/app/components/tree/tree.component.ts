@@ -32,6 +32,7 @@ import { TreeService } from '../../srevices/tree.service';
 export class TreeComponent implements OnInit {
 
 
+
   @ViewChild('treeContainer', { static: false }) treeContainerRef!: ElementRef;
 
   familyTree: FamilyMember[] = [];
@@ -58,6 +59,7 @@ export class TreeComponent implements OnInit {
 
     this.treeService.loadTree().then((tree) => {
       this.familyTree = tree;
+
       this.updateAllConnections(); // update lines after loading
 
     });
@@ -169,34 +171,6 @@ export class TreeComponent implements OnInit {
   }
 
 
-  // longPressTimeout: any = null;
-
-  // @HostListener('touchstart', ['$event'])
-  // onTouchStart(event: TouchEvent): void {
-  //   const target = event.target as HTMLElement;
-  //   const memberCard = target.closest('.member-card');
-
-  //   if (memberCard) {
-  //     this.longPressTimeout = setTimeout(() => {
-  //       const memberId = Number(memberCard.getAttribute('data-id'));
-  //       const member = this.treeService.findMemberById(this.familyTree, memberId);
-  //       if (member) {
-  //         this.assignSelectedMember(member);
-  //         this.cdr.detectChanges(); // Ensure UI updates
-  //       }
-  //     }, 1500); // 500ms = long press
-  //   }
-  // }
-
-  // @HostListener('touchend')
-  // @HostListener('touchcancel')
-  // onTouchEnd(): void {
-  //   clearTimeout(this.longPressTimeout);
-  // }
-
-
-
-  // ----------------- ZOOM & Scroll ----------------------
 
 
   private getDistance(touch1: Touch, touch2: Touch): number {
@@ -235,19 +209,6 @@ export class TreeComponent implements OnInit {
     }
   }
 
-  zoomLevel: number = 1;
-
-  zoomIn(): void {
-    if (this.zoomLevel < 2) {
-      this.zoomLevel += 0.1;
-    }
-  }
-
-  zoomOut(): void {
-    if (this.zoomLevel > 0.3) {
-      this.zoomLevel -= 0.1;
-    }
-  }
 
 
 
@@ -274,6 +235,76 @@ export class TreeComponent implements OnInit {
       this.collectLines(root);
     }
   }
+
+
+
+  // ----------------- ZOOM & Scroll ----------------------
+
+
+
+zoomLevel: number = 3;
+readonly MIN_ZOOM = 0;
+readonly MAX_ZOOM = 3;
+readonly ZOOM_STEP = 0.1;
+
+zoomIn(): void {
+  this.zoomLevel = Math.min(this.zoomLevel + this.ZOOM_STEP, this.MAX_ZOOM);
+}
+
+zoomOut(): void {
+  this.zoomLevel = Math.max(this.zoomLevel - this.ZOOM_STEP, this.MIN_ZOOM);
+}
+
+
+ngAfterViewInit(): void {
+  this.waitUntilTreeReady();
+}
+
+waitUntilTreeReady(): void {
+  const containerEl = this.treeContainerRef.nativeElement as HTMLElement;
+
+  const checkReady = () => {
+    const contentWidth = this.getTreeWidth();
+    const contentHeight = this.getTreeHeight();
+
+    if (contentWidth > 0 && contentHeight > 0 && containerEl.clientWidth > 0 && containerEl.clientHeight > 0) {
+      this.centerAndZoomTree();
+    } else {
+      setTimeout(checkReady, 50); // try again after 50ms
+    }
+  };
+
+  checkReady();
+}
+
+centerAndZoomTree(): void {
+  const containerEl = this.treeContainerRef.nativeElement as HTMLElement;
+
+  const contentWidth = this.getTreeWidth();
+  const contentHeight = this.getTreeHeight();
+
+  const containerWidth = containerEl.clientWidth;
+  const containerHeight = containerEl.clientHeight;
+
+  // Best fit zoom (limit to max 1)
+  this.zoomLevel = Math.min(containerWidth / contentWidth, containerHeight / contentHeight, 1);
+
+  // Defer scroll centering until zoomLevel is rendered
+  setTimeout(() => {
+    containerEl.scrollLeft = ((contentWidth * this.zoomLevel) - containerWidth) / 2;
+    containerEl.scrollTop = ((contentHeight * this.zoomLevel) - containerHeight) / 2;
+  }, 50); // Ensure zoomLevel is applied first
+}
+
+getTreeWidth(): number {
+  return Math.max(...this.familyTree.map(m => m.x)) + 200; // padding
+}
+
+getTreeHeight(): number {
+  return Math.max(...this.familyTree.map(m => m.y)) + 200;
+}
+
+
 
 }
 

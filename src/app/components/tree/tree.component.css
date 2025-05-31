@@ -53,45 +53,59 @@
 
 }
 
-/*
-/* Tree container (relative for positioning) */
-
-
-/* .tree-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  background-image: linear-gradient(#bfa035, #00b894);
-  overflow: auto;
-} */
-
-
-
-/* Connection lines */
-/* .tree-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-} */
 
 
 .tree-container {
   background-image: linear-gradient(#bfa035, #00b894);
-
   position: relative;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   overflow: auto;
 }
 
+
+
+
+.zoom-wrapper {
+  transition: transform 0.2s ease;
+}
+.zoom-controls {
+        position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    background: cadetblue;
+    padding: 1.5vh 1.5vh 2.5vh 1.5vh;
+    border-radius: 20px;
+}
+
+.zoom-controls button {
+    background-color: #fff;
+    border: none;
+    color: #bfa035;
+    padding: 0.5vw 1.5vw;
+    border-radius: 2px;
+    font-size: 3vw;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    min-width: 5vw;
+    min-height: 5vw;
+    max-width: 20vw;
+    max-height: 20vw;
+    margin: 0.3vh;
+    /* margin-top: 0.8vh; */
+}
+
+
+
 .zoom-content {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
+  
   transition: transform 0.2s ease;
 }
 
@@ -156,20 +170,6 @@
   background-color: #d4af37;
 }
 
-/*
-.zoom-controls button {
-  background-color: #fff;
-  border: none;
-  color: #bfa035;
-  padding: 0.5rem 1.5rem;
-  margin: 1.5rem;
-  border-radius: 5px;
-  font-size: 3rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
- */
-
 
 
 
@@ -202,47 +202,4 @@ button {
 
 .member-card:active {
   cursor: grabbing;
-}
-/* --------------------------------- */
-/*
-.zoom-controls {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-} */
-
-.zoom-wrapper {
-  transition: transform 0.2s ease;
-}
-.zoom-controls {
-        position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 1rem;
-    margin-left: 1rem;
-    background: cadetblue;
-    padding: 1.5vh 1.5vh 2.5vh 1.5vh;
-    border-radius: 20px;
-}
-
-.zoom-controls button {
-    background-color: #fff;
-    border: none;
-    color: #bfa035;
-    padding: 0.5vw 1.5vw;
-    border-radius: 2px;
-    font-size: 3vw;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    min-width: 5vw;
-    min-height: 5vw;
-    max-width: 20vw;
-    max-height: 20vw;
-    margin: 0.3vh;
-    /* margin-top: 0.8vh; */
 }
