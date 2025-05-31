@@ -85,29 +85,74 @@ export class TreeComponent implements OnInit {
 
   // ----------------- Drag & Drop ----------------------
 
+
+
+  lastMouseX = 0;
+lastMouseY = 0;
   startDrag(event: MouseEvent | TouchEvent, member: FamilyMember): void {
 
-    const isTouch = event instanceof TouchEvent;
-    const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
-    const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
+//     const isTouch = event instanceof TouchEvent;
+//     const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
+//     const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
 
-    this.offsetX = clientX - member.x;
-    this.offsetY = clientY - member.y;
-    this.draggingMember = member;
+//     this.offsetX = clientX - member.x;
+//     this.offsetY = clientY - member.y;
+//     this.draggingMember = member;
 
-    if (isTouch) {
-      event.preventDefault(); // Prevent scrolling during touch drag
-    }
+//     if (isTouch) {
+//       event.preventDefault(); // Prevent scrolling during touch drag
+//     }
+  
+
+  const isTouch = event instanceof TouchEvent;
+  const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
+  const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
+
+  this.offsetX = clientX - member.x;
+  this.offsetY = clientY - member.y;
+
+  this.lastMouseX = clientX;
+  this.lastMouseY = clientY;
+
+  this.draggingMember = member;
+
+  if (isTouch) {
+    event.preventDefault(); // Prevent scrolling during touch drag
   }
+
+
+}
 
   @HostListener('document:mousemove', ['$event'])
   @HostListener('document:touchmove', ['$event'])
   onMouseMove(event: MouseEvent | TouchEvent): void {
-    if (this.draggingMember) {
-      this.treeService.moveMember(this.draggingMember, event, this.offsetX, this.offsetY);
-      this.updateAllConnections(); // recalculate positions
-      this.cdr.detectChanges();
-    }
+//     if (this.draggingMember) {
+//       this.treeService.moveMember(this.draggingMember, event, this.offsetX, this.offsetY);
+//       this.updateAllConnections(); // recalculate positions
+//       this.cdr.detectChanges();
+//     }
+
+ if (!this.draggingMember) return;
+
+  const isTouch = event instanceof TouchEvent;
+  const clientX = isTouch ? event.touches[0].clientX : (event as MouseEvent).clientX;
+  const clientY = isTouch ? event.touches[0].clientY : (event as MouseEvent).clientY;
+
+  const deltaX = clientX - this.lastMouseX;
+  const deltaY = clientY - this.lastMouseY;
+
+  this.moveWithDescendants(this.draggingMember, deltaX, deltaY);
+
+  this.lastMouseX = clientX;
+  this.lastMouseY = clientY;
+
+  this.updateAllConnections();
+  this.cdr.detectChanges();
+
+
+
+
+    
   }
 
   @HostListener('document:mouseup')
@@ -115,6 +160,28 @@ export class TreeComponent implements OnInit {
   stopDrag(): void {
     this.draggingMember = null;
   }
+
+
+
+
+
+
+
+
+
+
+
+moveWithDescendants(member: FamilyMember, deltaX: number, deltaY: number): void {
+  member.x += deltaX;
+  member.y += deltaY;
+
+  if (member.children && member.children.length) {
+    for (const child of member.children) {
+      this.moveWithDescendants(child, deltaX, deltaY);
+    }
+  }
+}
+
 
   // ----------------- selection ----------------------
 
