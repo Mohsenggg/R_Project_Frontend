@@ -14,20 +14,22 @@
 /* Member card */
 .member-card {
   position: absolute;
-  width: 100px;
-  height: 100px;
-  background-color: white;
-  border: 2px solid #bfa035; /* gold border */
-  border-radius: 30%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: grab;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  user-select: none;
+    width: 160px;
+    height: 120px;
+    background-color: #065232;
+    border: 16px solid #b29124;
+    border-radius: 30%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    user-select: none;
+
 }
+
 
 /* Hover effect */
 .member-card:hover {
@@ -46,8 +48,8 @@
 .member-card p {
   margin: 0;
   padding: 0;
-  font-size: 1.2rem;
-  color: #bfa035;
+  font-size: 2.2rem;
+  color: #fde8a3;
   font-weight: bold;
   font-family: 'Amiri', serif;
 
@@ -56,40 +58,41 @@
 
 
 .tree-container {
-  background-image: linear-gradient(#bfa035, #00b894);
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
+     background-image: linear-gradient(#663400, #004117);
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
 }
-
-
-
 
 .zoom-wrapper {
   transition: transform 0.2s ease;
 }
 .zoom-controls {
-        position: fixed;
+
+    position: fixed;
     top: 10px;
     left: 10px;
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    border: 7px solid #ffde71;
     gap: 10px;
     margin-top: 1rem;
     margin-left: 1rem;
-    background: cadetblue;
-    padding: 1.5vh 1.5vh 2.5vh 1.5vh;
-    border-radius: 20px;
+    background: #623501;
+    padding: 0.8vh;
+    border-radius: 90px;
 }
 
+
 .zoom-controls button {
+  
     background-color: #fff;
-    border: none;
+    border: 5px solid #ffde71;
     color: #bfa035;
     padding: 0.5vw 1.5vw;
-    border-radius: 2px;
+    border-radius: 90px;
     font-size: 3vw;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -97,10 +100,9 @@
     min-height: 5vw;
     max-width: 20vw;
     max-height: 20vw;
-    margin: 0.3vh;
-    /* margin-top: 0.8vh; */
-}
+    margin: 0.7vh 0.5vh;
 
+}
 
 
 .zoom-content {
@@ -169,9 +171,6 @@
 .edit-panel button:hover {
   background-color: #d4af37;
 }
-
-
-
 
 
 /* Children list in edit panel */

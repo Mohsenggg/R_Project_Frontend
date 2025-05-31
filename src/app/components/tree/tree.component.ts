@@ -220,9 +220,9 @@ export class TreeComponent implements OnInit {
 
     for (const child of member.children) {
       this.connectionLines.push({
-        x1: member.x + 50,
-        y1: member.y + 105,
-        x2: child.x + 50,
+        x1: member.x + 105,
+        y1: member.y + 150,
+        x2: child.x + 100,
         y2: child.y,
       });
       this.collectLines(child); // recursively get child lines
