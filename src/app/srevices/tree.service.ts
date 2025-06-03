@@ -1,57 +1,115 @@
 import { Injectable } from '@angular/core';
 import { FamilyMember } from '../model/interface/FamilyMember';
-import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+// import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
 
 
 
 @Injectable({
      providedIn: 'root'
 })
+
 export class TreeService {
+  private supabase: SupabaseClient;
+  private readonly treeId = 'familyTree';
 
+  constructor() {
+    const supabaseUrl = 'https://fiyovbegdydjkebrnyxw.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpeW92YmVnZHlkamtlYnJueXh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5NjU2MTMsImV4cCI6MjA2NDU0MTYxM30.C3Nc83NgfX7R1nFiMKTddGiJNbjA_KQZDZinVLt-Xe4';
 
-  private readonly treePath = 'trees/familyTree';
-
-  constructor(private firestore: Firestore) {}
-
- /** Save the family tree to Firestore (as plain JSON) */
- async saveTree(tree: FamilyMember[]): Promise<void> {
-  const treeRef = doc(this.firestore, this.treePath);
-
-  // Convert to plain object (avoid functions, undefined, circular refs)
-  const plainTree = JSON.parse(JSON.stringify(tree));
-
-  try {
-    await setDoc(treeRef, { tree: plainTree });
-    console.log('✅ Family tree saved successfully');
-  } catch (error) {
-    console.error('❌ Failed to save family tree:', error);
-    throw error;
+    this.supabase = createClient(supabaseUrl, supabaseKey);
   }
-}
 
-/** Load the family tree from Firestore */
-async loadTree(): Promise<FamilyMember[]> {
-  const treeRef = doc(this.firestore, this.treePath);
+  /** Save the family tree to Supabase */
+  async saveTree(tree: FamilyMember[]): Promise<void> {
+    const plainTree = JSON.parse(JSON.stringify(tree));
 
-  try {
-    const snapshot = await getDoc(treeRef);
+    const { error } = await this.supabase
+      .from('trees')
+      .upsert({ id: this.treeId, tree: plainTree });
 
-    if (snapshot.exists()) {
-      const data = snapshot.data();
-      const loadedTree = data?.['tree'] || [];
-      console.log('✅ Family tree loaded:', loadedTree);
-      return loadedTree as FamilyMember[];
-    } else {
-      console.warn('⚠️ No family tree found in Firestore');
+    if (error) {
+      console.error('❌ Failed to save family tree:', error);
+      throw error;
+    }
+
+    console.log('✅ Family tree saved successfully');
+  }
+
+  /** Load the family tree from Supabase */
+  async loadTree(): Promise<FamilyMember[]> {
+    const { data, error } = await this.supabase
+      .from('trees')
+      .select('tree')
+      .eq('id', this.treeId)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        console.warn('⚠️ No family tree found in Supabase');
+        return [];
+      }
+
+      console.error('❌ Failed to load family tree:', error);
       return [];
     }
 
-  } catch (error) {
-    console.error('❌ Failed to load family tree:', error);
-    return [];
+    const loadedTree = data.tree || [];
+    console.log('✅ Family tree loaded:', loadedTree);
+    return loadedTree as FamilyMember[];
   }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+//  /** Save the family tree to Firestore (as plain JSON) */
+//  async saveTree(tree: FamilyMember[]): Promise<void> {
+//   const treeRef = doc(this.firestore, this.treePath);
+
+//   // Convert to plain object (avoid functions, undefined, circular refs)
+//   const plainTree = JSON.parse(JSON.stringify(tree));
+
+//   try {
+//     await setDoc(treeRef, { tree: plainTree });
+//     console.log('✅ Family tree saved successfully');
+//   } catch (error) {
+//     console.error('❌ Failed to save family tree:', error);
+//     throw error;
+//   }
+// }
+
+// /** Load the family tree from Firestore */
+// async loadTree(): Promise<FamilyMember[]> {
+//   const treeRef = doc(this.firestore, this.treePath);
+
+//   try {
+//     const snapshot = await getDoc(treeRef);
+
+//     if (snapshot.exists()) {
+//       const data = snapshot.data();
+//       const loadedTree = data?.['tree'] || [];
+//       console.log('✅ Family tree loaded:', loadedTree);
+//       return loadedTree as FamilyMember[];
+//     } else {
+//       console.warn('⚠️ No family tree found in Firestore');
+//       return [];
+//     }
+
+//   } catch (error) {
+//     console.error('❌ Failed to load family tree:', error);
+//     return [];
+//   }
+// }
 
 
 
