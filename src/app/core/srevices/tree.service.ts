@@ -39,7 +39,7 @@ export class TreeService {
   }
 
   /** Load the family tree from Supabase */
-  async loadTree(): Promise<FamilyMember[]> {
+  async loadTreeFromSupabase(): Promise<FamilyMember[]> {
     const { data, error } = await this.supabase
       .from('trees')
       .select('tree')

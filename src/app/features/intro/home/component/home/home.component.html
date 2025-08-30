@@ -1,0 +1,25 @@
+
+<div *ngIf="currentTab !== 'tree' && currentTab !== 'tree-test'">
+      
+      <h1> مـرحــبـا آل عـمــران</h1>
+<P></P>
+<h2> اسـتـكـشـف شــجـرة العـائـلة</h2>
+<p></p>
+<button type="button" class="btn" [ngClass]="currentTab == 'tree'?'btn-success':'btn-secondary'" (click)="showPage('tree')">
+  من هـنا
+</button>
+<p></p>
+<button type="button" class="btn" [ngClass]="currentTab == 'tree-test'?'btn-success':'btn-secondary'" (click)="showPage('tree-test')">
+  اختبر
+</button>
+</div>
+
+
+<div class="col-12" *ngIf="currentTab == 'tree'">
+  <app-tree></app-tree>
+</div>
+
+<div class="col-12" *ngIf="currentTab == 'tree-test'">
+      <app-tree-d3-test></app-tree-d3-test>
+</div>
+

@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FamilyMember } from '../../model/interface/FamilyMember';
-import { TreeService } from '../../srevices/tree.service';
+import { FamilyMember } from '../../../../../core/model/interface/FamilyMember';
+import { TreeService } from '../../../../../core/srevices/tree.service';
 
 @Component({
   selector: 'app-tree',
@@ -57,7 +57,7 @@ export class TreeComponent implements OnInit {
 
   ngOnInit() {
 
-    this.treeService.loadTree().then((tree) => {
+    this.treeService.loadTreeFromSupabase().then((tree) => {
       this.familyTree = tree;
 
       this.updateAllConnections(); // update lines after loading
@@ -163,14 +163,6 @@ lastMouseY = 0;
 
 
 
-
-
-
-
-
-
-
-
 moveWithDescendants(member: FamilyMember, deltaX: number, deltaY: number): void {
   member.x += deltaX;
   member.y += deltaY;
@@ -239,7 +231,6 @@ moveWithDescendants(member: FamilyMember, deltaX: number, deltaY: number): void 
 
 
 
-
   private getDistance(touch1: Touch, touch2: Touch): number {
     const dx = touch2.clientX - touch1.clientX;
     const dy = touch2.clientY - touch1.clientY;
@@ -278,8 +269,6 @@ moveWithDescendants(member: FamilyMember, deltaX: number, deltaY: number): void 
 
 
 
-
-
   connectionLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
 
   private collectLines(member: FamilyMember): void {
@@ -311,7 +300,7 @@ moveWithDescendants(member: FamilyMember, deltaX: number, deltaY: number): void 
 
 zoomLevel: number = 3;
 readonly MIN_ZOOM = 0;
-readonly MAX_ZOOM = 3;
+readonly MAX_ZOOM = 5;
 readonly ZOOM_STEP = 0.1;
 
 zoomIn(): void {

@@ -1,0 +1,19 @@
+<div class="preview-container" [class.section2-main]="!isSection1Main">
+  <div class="section section1">
+    <div class="zoom-controls">
+      <button type="button" class="zoom-btn" (click)="switchToSection1()" title="Make Section 1 Main">⇧</button>
+      <button type="button" class="zoom-btn" (click)="zoomIn(1)">+</button>
+      <button type="button" class="zoom-btn" (click)="zoomOut(1)">−</button>
+    </div>
+    <div #section1Container class="tree-container"></div>
+  </div>
+
+  <div class="section section2">
+    <div class="zoom-controls">
+      <button type="button" class="zoom-btn" (click)="switchToSection2()" [disabled]="!selectedLevelCId" title="Make Section 2 Main">⇩</button>
+      <button type="button" class="zoom-btn" (click)="zoomIn(2)">+</button>
+      <button type="button" class="zoom-btn" (click)="zoomOut(2)">−</button>
+    </div>
+    <div #section2Container class="tree-container"></div>
+  </div>
+</div>
