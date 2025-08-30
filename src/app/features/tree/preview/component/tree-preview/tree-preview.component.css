@@ -1,11 +1,83 @@
-.preview-container { display: grid; grid-template-rows: 75% 25%; height: 100vh; }
-.preview-container.section2-main { grid-template-rows: 25% 75%; }
-.section { position: relative; overflow: hidden; display: flex; flex-direction: column; }
-.section-header { display: flex; align-items: center; }
-.section-header .spacer { flex: 1; }
-.toolbar { padding: 4px 0; }
-.tree-container { flex: 1; width: 100%; height: 100%; background: #f9f9f9; overflow: hidden; }
-.zoom-controls { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
-.zoom-btn { background: #1976d2; color: #fff; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 18px; line-height: 36px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+.preview-container {
+  position: relative;
+  height: 100vh;
+  background: #f9f9f9;
+  overflow: hidden;
+}
 
-@media (max-width: 768px) { .preview-container { height: calc(100vh - 56px); } }
+.unified-tree-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.zoom-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+}
+
+.zoom-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  line-height: 36px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.zoom-btn:hover {
+  background: #1565c0;
+}
+
+/* Special styling for the selected C node to span both sections */
+.node-c-selected {
+  /* This will be applied via D3 to make the C node span both sections */
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+/* Styling for nodes in section 2 (D, E, F levels) */
+.node-section2 {
+  /* Nodes in section 2 get a different visual treatment */
+  opacity: 0.9;
+}
+
+/* Enhanced styling for the selected C node */
+.node-c-selected circle {
+  stroke-width: 4px;
+  stroke: #1976d2;
+}
+
+.node-c-selected text {
+  font-weight: bold;
+  fill: #1976d2;
+}
+
+/* Special styling for links from C nodes to their children */
+.link-c-to-children {
+  stroke-dasharray: 5,5;
+  animation: dash 2s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+@media (max-width: 768px) {
+  .preview-container {
+    height: calc(100vh - 56px);
+  }
+}

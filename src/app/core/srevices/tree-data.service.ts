@@ -34,13 +34,45 @@ export class TreeDataService {
   }
 
   getTreeDataFromJson(): Observable<TreeNode> {
-    return this.http.get<TreeNode>('assets/resources/treeDummyData.json');
+    return this.http.get<{treeData: PreviewNode[]}>('assets/resources/newTreeData.json').pipe(
+      map((response) => this.convertToHierarchicalTree(response.treeData))
+    );
   }
 
   getPreviewNodesFromJson(): Observable<PreviewNode[]> {
-    return this.getTreeDataFromJson().pipe(
-      map((root) => this.flattenToPreviewNodes(root))
+    return this.http.get<{treeData: PreviewNode[]}>('assets/resources/newTreeData.json').pipe(
+      map((response) => response.treeData)
     );
+  }
+
+  private convertToHierarchicalTree(nodes: PreviewNode[]): TreeNode {
+    const nodeMap = new Map<string, PreviewNode>();
+    const treeMap = new Map<string, TreeNode>();
+
+    // Create maps for quick lookup
+    nodes.forEach(node => {
+      nodeMap.set(node.id, node);
+      treeMap.set(node.id, { name: node.name, children: [] });
+    });
+
+    // Build the tree structure
+    const rootNode = nodes.find(node => node.parentId === null);
+    if (!rootNode) {
+      return { name: 'Root', children: [] };
+    }
+
+    nodes.forEach(node => {
+      if (node.parentId && nodeMap.has(node.parentId)) {
+        const parent = treeMap.get(node.parentId);
+        const current = treeMap.get(node.id);
+        if (parent && current) {
+          parent.children = parent.children || [];
+          parent.children.push(current);
+        }
+      }
+    });
+
+    return treeMap.get(rootNode.id) || { name: 'Root', children: [] };
   }
 
   private flattenToPreviewNodes(root: TreeNode): PreviewNode[] {
