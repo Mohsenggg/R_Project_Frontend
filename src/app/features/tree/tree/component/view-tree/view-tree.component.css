@@ -1,0 +1,40 @@
+.member-card {
+  position: absolute;
+  background-color: #065232;
+  border-style: solid;
+  border-color: #b29124;
+  border-radius: 30%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(.4,2,.6,1);
+  user-select: none;
+  z-index: 2;
+  overflow: hidden;
+  cursor: default;
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+
+.member-card.selectable {
+  cursor: pointer;
+}
+
+.member-card.selectable:hover {
+  box-shadow: 0 8px 32px 4px #b29124, 0 2px 16px rgba(0,0,0,0.18);
+  border-color: #ffb300;
+  background: linear-gradient(135deg, #065232 80%, #b29124 100%);
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.member-card.selected {
+  border-color: #ff9800;
+  box-shadow: 0 0 32px 8px #ff9800, 0 4px 24px rgba(0,0,0,0.18);
+  background: linear-gradient(135deg, #065232 60%, #ff9800 100%);
+  transform: scale(1.09) rotate(1deg);
+  z-index: 3;
+}
