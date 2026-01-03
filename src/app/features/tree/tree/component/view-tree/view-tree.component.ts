@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnDestroy } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy, effect, untracked } from '@angular/core';
 
 import { INodeLayout, ITreeNode, ITreeNodesGroup } from '../../model/interface/view-Tree-interfaces';
 import { CommonModule } from '@angular/common';
@@ -98,6 +98,30 @@ export class ViewTreeComponent implements OnDestroy {
 
       constructor() {
             window.addEventListener('resize', this.handleResize);
+
+            // Synchronize animatedNodeIds with current visibility
+            // This ensures that if a node leaves the view, it's forgotten and can animate again if it re-appears.
+            effect(() => {
+                  const groups = this.filteredTreeData(); // Trigger on data change
+                  const visibleIds = new Set<number>();
+                  groups.forEach(g => g.nodeList.forEach(n => visibleIds.add(n.id)));
+
+                  const currentAnimated = untracked(this.animatedNodeIds);
+                  const pruned = new Set<number>();
+                  let changed = false;
+
+                  currentAnimated.forEach(id => {
+                        if (visibleIds.has(id)) {
+                              pruned.add(id);
+                        } else {
+                              changed = true;
+                        }
+                  });
+
+                  if (changed) {
+                        this.animatedNodeIds.set(pruned);
+                  }
+            }, { allowSignalWrites: true });
       }
 
       ngOnDestroy(): void {
