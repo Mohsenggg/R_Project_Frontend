@@ -1,3 +1,7 @@
+@import url(https://fonts.googleapis.com/earlyaccess/scheherazade.css);
+/*font-family: 'Scheherazade', serif;*/
+
+
 .tree-container {
       width: 100vw;
       height: 100vh;
@@ -136,9 +140,11 @@
 
 /* Text styles */
 .member-card p {
+      font-family: 'Scheherazade', serif;
       margin: 0;
-      font-weight: 500;
-      font-size: 14px;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 50px;
 }
 
 .member-card small {

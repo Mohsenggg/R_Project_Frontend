@@ -1,18 +1,24 @@
-import { Component, computed, inject, signal, OnDestroy, effect, untracked } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy, effect, untracked, OnInit } from '@angular/core';
 
 import { INodeLayout, ITreeNode, ITreeNodesGroup } from '../../model/interface/view-Tree-interfaces';
 import { CommonModule } from '@angular/common';
-import { treeData } from '../../model/data/treeData';
 import { ViewTreeService } from '../../service/ViewTreeService';
+import { TreeDataService } from '../../service/tree-data.service';
+import { MockTreeDataService } from '../../service/mock-tree-data.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ApiTreeDataService } from '../../service/api-tree-data.service';
 
 @Component({
       selector: 'app-view-tree',
       standalone: true,
       imports: [CommonModule],
       templateUrl: './view-tree.component.html',
-      styleUrl: './view-tree.component.css'
+      styleUrl: './view-tree.component.css',
+      providers: [
+            { provide: TreeDataService, useClass: MockTreeDataService }
+      ]
 })
-export class ViewTreeComponent implements OnDestroy {
+export class ViewTreeComponent implements OnInit, OnDestroy {
 
       //===============================
       // ===== Constants =====
@@ -27,10 +33,12 @@ export class ViewTreeComponent implements OnDestroy {
       // ===== Services =====
 
       private treeService = inject(ViewTreeService);
+      private treeDataService = inject(TreeDataService);
 
       //===============================
       // ===== State Signals =====
 
+      private readonly treeNodes = signal<ITreeNode[]>([]);
       private readonly windowWidth = signal(window.innerWidth);
       private readonly windowHeight = signal(window.innerHeight);
       private readonly selectedNodeIds = signal<Map<number, number>>(new Map());
@@ -132,6 +140,14 @@ export class ViewTreeComponent implements OnDestroy {
             }, { allowSignalWrites: true });
       }
 
+      ngOnInit(): void {
+            // Fetch data on initialization. 
+            // In a real app, you might get the treeId from route params.
+            this.treeDataService.getTreeNodes(1).subscribe(nodes => {
+                  this.treeNodes.set(nodes);
+            });
+      }
+
       ngOnDestroy(): void {
             window.removeEventListener('resize', this.handleResize);
       }
@@ -160,7 +176,7 @@ export class ViewTreeComponent implements OnDestroy {
 
 
       private hasChildren(nodeId: number): boolean {
-            return treeData.some(n => n.parentId === nodeId);
+            return this.treeNodes().some(n => n.parentId === nodeId);
       }
 
       selectNode(level: number, nodeId: number): void {
@@ -192,15 +208,18 @@ export class ViewTreeComponent implements OnDestroy {
             let display = this.getDeepestSelectedNodeLevel();
             if (display === -1) display = this.DisplayMode.FIRST;
 
+            const currentTreeData = this.treeNodes();
+            if (currentTreeData.length === 0) return [];
+
             // L0 - Root (always shown)
-            const l0NodeGroup = this.treeService.getRoot(treeData);
+            const l0NodeGroup = this.treeService.getRoot(currentTreeData);
             if (!l0NodeGroup) return nodesGroupList;
 
             nodesGroupList.push(l0NodeGroup);
 
             // L1 - Root children (always shown)
             const l1NodeGroup = this.treeService.getChildren(
-                  treeData,
+                  currentTreeData,
                   l0NodeGroup.nodeList[0]?.id || 0
             );
 
@@ -211,35 +230,35 @@ export class ViewTreeComponent implements OnDestroy {
             // L2 - Children of selected L1
             const selectedL1Id = selectedMap.get(1);
             if (selectedL1Id) {
-                  const l2NodeGroup = this.treeService.getChildren(treeData, selectedL1Id);
+                  const l2NodeGroup = this.treeService.getChildren(currentTreeData, selectedL1Id);
                   if (l2NodeGroup) nodesGroupList.push(l2NodeGroup);
             }
 
             // L3 - Children of selected L2
             const selectedL2Id = selectedMap.get(2);
             if (selectedL2Id) {
-                  const l3NodeGroup = this.treeService.getChildren(treeData, selectedL2Id);
+                  const l3NodeGroup = this.treeService.getChildren(currentTreeData, selectedL2Id);
                   if (l3NodeGroup) nodesGroupList.push(l3NodeGroup);
             }
 
             // L4 - Children of selected L3
             const selectedL3Id = selectedMap.get(3);
             if (selectedL3Id) {
-                  const l4NodeGroup = this.treeService.getChildren(treeData, selectedL3Id);
+                  const l4NodeGroup = this.treeService.getChildren(currentTreeData, selectedL3Id);
                   if (l4NodeGroup) nodesGroupList.push(l4NodeGroup);
             }
 
             // L5 - Children of selected L4
             const selectedL4Id = selectedMap.get(4);
             if (selectedL4Id) {
-                  const l5NodeGroup = this.treeService.getChildren(treeData, selectedL4Id);
+                  const l5NodeGroup = this.treeService.getChildren(currentTreeData, selectedL4Id);
                   if (l5NodeGroup) nodesGroupList.push(l5NodeGroup);
             }
 
             // L6 - Children of selected L5
             const selectedL5Id = selectedMap.get(5);
             if (selectedL5Id) {
-                  const l6NodeGroup = this.treeService.getChildren(treeData, selectedL5Id);
+                  const l6NodeGroup = this.treeService.getChildren(currentTreeData, selectedL5Id);
                   if (l6NodeGroup) nodesGroupList.push(l6NodeGroup);
             }
 
