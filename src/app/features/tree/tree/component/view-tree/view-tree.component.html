@@ -1,7 +1,8 @@
-<div class="tree-container">
+<div class="tree-container" #scrollContainer (mousedown)="onMouseDown($event)">
 
       <!-- Tree Display Area -->
-      <div class="tree-display" [attr.data-display-mode]="currentDisplay()">
+      <div class="tree-display" [attr.data-display-mode]="currentDisplay()" [style.width.px]="treeBounds().width"
+            [style.height.px]="treeBounds().height">
 
             <!-- SVG Connections Layer -->
             <svg class="tree-connectors">

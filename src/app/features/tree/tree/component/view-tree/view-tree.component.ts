@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnDestroy, effect, untracked, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy, effect, untracked, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { INodeLayout, ITreeNode, ITreeNodesGroup } from '../../model/interface/view-Tree-interfaces';
 import { CommonModule } from '@angular/common';
@@ -43,6 +43,15 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
       private readonly windowHeight = signal(window.innerHeight);
       private readonly selectedNodeIds = signal<Map<number, number>>(new Map());
       private readonly animatedNodeIds = signal<Set<number>>(new Set());
+
+      @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
+
+      // Panning state
+      private isDragging = false;
+      private panStartX = 0;
+      private panStartY = 0;
+      private panScrollLeft = 0;
+      private panScrollTop = 0;
 
 
       //===============================
@@ -102,6 +111,30 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
             return links;
       });
 
+      // Bounds calculation for scrolling
+      readonly treeBounds = computed(() => {
+            const groups = this.filteredTreeData();
+            let maxWidth = this.windowWidth();
+            let maxHeight = this.windowHeight();
+
+            groups.forEach(group => {
+                  group.nodeList.forEach(node => {
+                        if (node.layout) {
+                              const right = node.layout.leftSpaceX + node.layout.nodeWidth;
+                              const bottom = node.layout.topSpaceY + node.layout.nodeHeight;
+                              maxWidth = Math.max(maxWidth, right);
+                              maxHeight = Math.max(maxHeight, bottom);
+                        }
+                  });
+            });
+
+            // Add some padding to the bounds
+            return {
+                  width: maxWidth + 100,
+                  height: maxHeight + 100
+            };
+      });
+
       private generateBezierPath(x1: number, y1: number, x2: number, y2: number): string {
             // Cubic Bezier with control points vertical
             const cy = (y1 + y2) / 2;
@@ -150,11 +183,71 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
 
       ngOnDestroy(): void {
             window.removeEventListener('resize', this.handleResize);
+            window.removeEventListener('mouseup', this.onMouseUp);
+            window.removeEventListener('mousemove', this.onMouseMove);
       }
 
       private handleResize = (): void => {
             this.windowWidth.set(window.innerWidth);
             this.windowHeight.set(window.innerHeight);
+      };
+
+      // ===============================
+      // ======= Panning Logic ========
+      // ===============================
+
+      onMouseDown(event: MouseEvent): void {
+            // Only left click
+            if (event.button !== 0) return;
+
+            // Check if clicking on a card - if so, don't pan (let it be a selection)
+            const target = event.target as HTMLElement;
+            if (target.closest('.member-card')) return;
+
+            this.isDragging = true;
+            const container = this.scrollContainer.nativeElement;
+
+            this.panStartX = event.pageX - container.offsetLeft;
+            this.panStartY = event.pageY - container.offsetTop;
+            this.panScrollLeft = container.scrollLeft;
+            this.panScrollTop = container.scrollTop;
+
+            container.classList.add('panning');
+            container.style.cursor = 'grabbing';
+            container.style.userSelect = 'none';
+
+            // Add global listeners to handle dragging outside the container
+            window.addEventListener('mousemove', this.onMouseMove);
+            window.addEventListener('mouseup', this.onMouseUp);
+      }
+
+      onMouseMove = (event: MouseEvent): void => {
+            if (!this.isDragging) return;
+
+            event.preventDefault();
+            const container = this.scrollContainer.nativeElement;
+
+            const x = event.pageX - container.offsetLeft;
+            const y = event.pageY - container.offsetTop;
+
+            const walkX = (x - this.panStartX) * 1.5; // Drag speed multiplier
+            const walkY = (y - this.panStartY) * 1.5;
+
+            container.scrollLeft = this.panScrollLeft - walkX;
+            container.scrollTop = this.panScrollTop - walkY;
+      };
+
+      onMouseUp = (): void => {
+            if (!this.isDragging) return;
+
+            this.isDragging = false;
+            const container = this.scrollContainer.nativeElement;
+            container.classList.remove('panning');
+            container.style.cursor = 'grab';
+            container.style.removeProperty('user-select');
+
+            window.removeEventListener('mousemove', this.onMouseMove);
+            window.removeEventListener('mouseup', this.onMouseUp);
       };
 
 
