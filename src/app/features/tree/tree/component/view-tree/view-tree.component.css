@@ -30,7 +30,28 @@
       /* Match gold/yellow theme */
       stroke-width: 2px;
       stroke-opacity: 0.5;
-      transition: all 0.3s ease;
+      transition: stroke-opacity 0.3s ease;
+
+      /* Base state */
+      opacity: 1;
+}
+
+/* Connector entrance animation */
+.connector-path.enter {
+      opacity: 0;
+      animation: connectorEntrance 400ms ease forwards;
+      /* Match node staggering delay */
+      animation-delay: calc(var(--item-index, 0) * 50ms);
+}
+
+@keyframes connectorEntrance {
+      from {
+            opacity: 0;
+      }
+
+      to {
+            opacity: 1;
+      }
 }
 
 .level-group {

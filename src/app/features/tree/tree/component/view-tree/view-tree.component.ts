@@ -52,13 +52,17 @@ export class ViewTreeComponent implements OnDestroy {
       readonly treeLinks = computed(() => {
             const groups = this.filteredTreeData();
             const visibleNodes = new Map<number, ITreeNode>();
+            const nodeIndices = new Map<number, number>();
 
-            // 1. Index all visible nodes
+            // 1. Index all visible nodes and their positions in their groups
             groups.forEach(g => {
-                  g.nodeList.forEach(node => visibleNodes.set(node.id, node));
+                  g.nodeList.forEach((node, index) => {
+                        visibleNodes.set(node.id, node);
+                        nodeIndices.set(node.id, index);
+                  });
             });
 
-            const links: { d: string }[] = [];
+            const links: { d: string, childId: number, childIndex: number }[] = [];
 
             // 2. Generate links
             visibleNodes.forEach(node => {
@@ -79,7 +83,11 @@ export class ViewTreeComponent implements OnDestroy {
 
                         // Bezier Curve
                         const path = this.generateBezierPath(startX, startY, endX, endY);
-                        links.push({ d: path });
+                        links.push({
+                              d: path,
+                              childId: node.id,
+                              childIndex: nodeIndices.get(node.id) ?? 0
+                        });
                   }
             });
 
@@ -140,11 +148,12 @@ export class ViewTreeComponent implements OnDestroy {
       //===============================
 
       onNodeClick(node: ITreeNode): void {
-            // Allow selection of any node (except root/level 0 which seems to be restricted by design)
-            if (node.level !== undefined && node.level !== 0) {
+            // Allow selection of nodes between level 1 and 5.
+            // Level 0 (root) and Level 6 (deepest) are not selectable.
+            if (node.level !== undefined && node.level > 0 && node.level < 6) {
                   this.selectNode(node.level, node.id);
             } else {
-                  console.warn('Cannot select parent node or node without level:', node);
+                  console.warn('Node selection restricted for level:', node.level);
                   return;
             }
       }
@@ -300,9 +309,8 @@ export class ViewTreeComponent implements OnDestroy {
 
       canSelectNode(node: ITreeNode): boolean {
             const level = node.level;
-            if (level === undefined || level === 0) return false;
-
-            return true;
+            // Only levels 1 through 5 are selectable to reveal deeper levels.
+            return level !== undefined && level > 0 && level < 6;
       }
 
       //===============================

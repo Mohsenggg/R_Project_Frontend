@@ -5,7 +5,8 @@
 
             <!-- SVG Connections Layer -->
             <svg class="tree-connectors">
-                  <path *ngFor="let link of treeLinks()" [attr.d]="link.d" class="connector-path">
+                  <path *ngFor="let link of treeLinks()" [attr.d]="link.d" class="connector-path"
+                        [class.enter]="isNodeNew(link.childId)" [style.--item-index]="link.childIndex">
                   </path>
             </svg>
 
