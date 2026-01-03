@@ -1,22 +1,26 @@
 <div class="tree-container">
-  
-  <!-- Tree Display Area -->
-  <div class="tree-display" [attr.data-display-mode]="currentDisplay()">
-    
-    <!-- Loop through filtered tree data (each item is a level group) -->
-    <div *ngFor="let nodeLevelGroup of filteredTreeData()" class="level-group">
-      
-      <!-- Loop through nodes in this level -->
-      <div *ngFor="let node of nodeLevelGroup.nodeList"
-           class="member-card" 
-           [ngStyle]="getNodeStyle(node)"
-           [class.selectable]="canSelectNode(node)"
-           [class.selected]="selectedNodes().get(node.level!) === node.id"
-           (click)="onNodeClick(node)">
-        <p>{{ node.name }}</p>
-        <small>L{{ node.level }}</small>
+
+      <!-- Tree Display Area -->
+      <div class="tree-display" [attr.data-display-mode]="currentDisplay()">
+
+            <!-- SVG Connections Layer -->
+            <svg class="tree-connectors">
+                  <path *ngFor="let link of treeLinks()" [attr.d]="link.d" class="connector-path">
+                  </path>
+            </svg>
+
+            <!-- Loop through filtered tree data (each item is a level group) -->
+            <div *ngFor="let nodeLevelGroup of filteredTreeData()" class="level-group" @levelAnimation>
+
+                  <!-- Loop through nodes in this level -->
+                  <div *ngFor="let node of nodeLevelGroup.nodeList" class="member-card" [ngStyle]="getNodeStyle(node)"
+                        [class.selectable]="canSelectNode(node)"
+                        [class.selected]="selectedNodes().get(node.level!) === node.id" (click)="onNodeClick(node)"
+                        @cardAnimation>
+                        <p>{{ node.name }}</p>
+                        <small>L{{ node.level }}</small>
+                  </div>
+
+            </div>
+
       </div>
-      
-    </div>
-    
-  </div>

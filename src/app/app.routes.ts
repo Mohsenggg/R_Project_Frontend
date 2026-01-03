@@ -14,6 +14,11 @@ export const routes: Routes = [
       { path: 'tree-preview', component: TreePreviewComponent },
 
       { path: 'vTree', component: ViewTreeComponent },
+      {
+            path: 'd3-tree',
+            loadComponent: () => import('./features/tree/d3-tree/components/d3-tree/d3-tree.component').then(m => m.D3TreeComponent),
+            data: { demo: true } // optional flag if component needs to know it's a demo
+      },
 
 
 

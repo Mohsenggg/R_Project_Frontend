@@ -1,0 +1,87 @@
+<div class="tree-wrapper">
+      <svg #svgContainer [attr.width]="width()" [attr.height]="height()" class="d3-tree-svg">
+
+            <defs>
+                  <!-- Drop Shadow for Normal Cards -->
+                  <filter id="pillShadow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+                        <feOffset dx="0" dy="5" result="offsetblur" />
+                        <feComponentTransfer>
+                              <feFuncA type="linear" slope="0.3" />
+                        </feComponentTransfer>
+                        <feMerge>
+                              <feMergeNode />
+                              <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                  </filter>
+
+                  <!-- External Orange Glow for Selected/Active -->
+                  <filter id="glowShadow" x="-100%" y="-100%" width="300%" height="300%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="15" result="blur" /> <!-- Large blur for glow -->
+                        <feFlood flood-color="#ff9800" result="color" />
+                        <feComposite in="color" in2="blur" operator="in" result="coloredBlur" />
+                        <feMerge>
+                              <feMergeNode in="coloredBlur" />
+                              <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                  </filter>
+
+                  <!-- Standard Card Gradient -->
+                  <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="20%" stop-color="#065232" />
+                        <stop offset="100%" stop-color="#0a7a4b" />
+                  </linearGradient>
+
+                  <!-- Hover Gradient -->
+                  <linearGradient id="cardHoverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#065232" />
+                        <stop offset="100%" stop-color="#b29124" />
+                  </linearGradient>
+            </defs>
+
+            <!-- Zoom Group -->
+            <g #gZoom>
+
+                  <g class="links">
+                        <path *ngFor="let link of links()" [attr.d]="getLinkPath(link)" class="tree-link">
+                        </path>
+                  </g>
+
+                  <g class="nodes">
+                        <g *ngFor="let node of nodes()" class="node-group" [class.node-selected]="isSelected(node)"
+                              [attr.transform]="'translate(' + node.x + ',' + node.y + ')'" (click)="onNodeClick(node)">
+
+                              <!-- Glow Background (Only visible when selected) -->
+                              <!-- Using rect directly for better control than filter sometimes, but filter is cleaner in Defs -->
+
+                              <!-- Main Card: Pill Shape -->
+                              <!-- Width: 240, Height: 90, Centered at x=0, so x=-120 -->
+                              <rect x="-120" y="-45" width="240" height="90" rx="45" ry="45" class="node-card"
+                                    [style.filter]="isSelected(node) ? 'url(#glowShadow)' : 'url(#pillShadow)'">
+                              </rect>
+
+                              <!-- Level Label -->
+                              <text x="0" y="-15" class="node-level" text-anchor="middle">
+                                    L{{ node.data.level }}
+                              </text>
+
+                              <!-- Name Label -->
+                              <text x="0" y="15" class="node-name" text-anchor="middle">
+                                    {{ node.data.name }}
+                              </text>
+
+                              <!-- Collapse Indicator (Optional: Can be hidden if accordion behavior is intuitive) -->
+                              <circle *ngIf="node.children || node.data._children" cx="0" cy="45" r="10" fill="#b29124"
+                                    stroke="white" stroke-width="1">
+                              </circle>
+                              <text *ngIf="node.children || node.data._children" x="0" cy="50" font-size="12"
+                                    fill="white" text-anchor="middle" font-weight="bold" pointer-events="none">
+                                    {{ node.data._children ? '+' : '-' }}
+                              </text>
+
+                        </g>
+                  </g>
+
+            </g>
+      </svg>
+</div>
