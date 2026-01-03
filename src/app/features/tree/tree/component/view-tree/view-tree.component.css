@@ -44,38 +44,76 @@
       /* Let events pass to cards */
 }
 
+/* ===============================
+   MEMBER CARD
+   =============================== */
 .member-card {
       position: absolute;
       z-index: 10;
       pointer-events: auto;
-      /* Re-enable clicks */
 
-      /* Original styles or assumed standard card styles */
       background: linear-gradient(135deg, #065232 0%, #0a7a4b 100%);
       border: 2px solid #b29124;
       border-radius: 30px;
-      /* Pill shape approximation if not already set */
       color: white;
+
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       cursor: pointer;
-      transition: all 0.3s ease;
+
+      /* Entrance animation base states - only active during .enter */
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      will-change: transform, opacity;
+
+      /* Interaction transitions */
+      transition: transform 300ms cubic-bezier(0.2, 0, 0.2, 1),
+            box-shadow 300ms ease,
+            border-color 300ms ease,
+            opacity 300ms ease;
 }
 
-.member-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+/* Entrance animation state */
+.member-card.enter {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+      animation: cardEntrance 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation-delay: calc(var(--item-index, 0) * 50ms);
 }
 
+/* Entrance animation */
+@keyframes cardEntrance {
+      from {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+      }
+
+      to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+      }
+}
+
+/* Hover interaction */
+.member-card:not(.enter):hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 20;
+}
+
+/* Selected state */
 .member-card.selected {
-      box-shadow: 0 0 15px #ff9800;
-      /* Orange glow */
+      box-shadow: 0 0 15px #ff9800, 0 4px 6px rgba(0, 0, 0, 0.1);
       border-color: #ff9800;
+      transform: translateY(-1px);
+      /* Keep slight lift */
 }
 
+/* Text styles */
 .member-card p {
       margin: 0;
       font-weight: 500;
@@ -87,4 +125,26 @@
       opacity: 0.8;
 }
 
-/* Specific display modes might have transform scaling handled by logic or CSS classes */
+/* ===============================
+   LEVEL GROUP (CONTAINER)
+   =============================== */
+.level-group {
+      /* Container doesn't need animation - cards animate individually */
+      opacity: 1;
+}
+
+/* ===============================
+   ACCESSIBILITY
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+      .member-card {
+            animation: none;
+            transition: none;
+            opacity: 1;
+            transform: none;
+      }
+
+      .level-group .member-card {
+            animation-delay: 0ms !important;
+      }
+}

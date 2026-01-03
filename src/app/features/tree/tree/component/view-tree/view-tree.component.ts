@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, OnDestroy } from '@angular/core';
-import { trigger, style, animate, transition } from '@angular/animations';
+
 import { INodeLayout, ITreeNode, ITreeNodesGroup } from '../../model/interface/view-Tree-interfaces';
 import { CommonModule } from '@angular/common';
 import { treeData } from '../../model/data/treeData';
@@ -10,21 +10,7 @@ import { ViewTreeService } from '../../service/ViewTreeService';
       standalone: true,
       imports: [CommonModule],
       templateUrl: './view-tree.component.html',
-      styleUrl: './view-tree.component.css',
-      animations: [
-            trigger('levelAnimation', [
-                  transition(':enter', [
-                        style({ opacity: 0, transform: 'translateY(-20px)' }),
-                        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-                  ])
-            ]),
-            trigger('cardAnimation', [
-                  transition(':enter', [
-                        style({ opacity: 0, transform: 'scale(0.8)' }),
-                        animate('350ms 100ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
-                  ])
-            ])
-      ]
+      styleUrl: './view-tree.component.css'
 })
 export class ViewTreeComponent implements OnDestroy {
 
@@ -48,6 +34,7 @@ export class ViewTreeComponent implements OnDestroy {
       private readonly windowWidth = signal(window.innerWidth);
       private readonly windowHeight = signal(window.innerHeight);
       private readonly selectedNodeIds = signal<Map<number, number>>(new Map());
+      private readonly animatedNodeIds = signal<Set<number>>(new Set());
 
 
       //===============================
@@ -300,6 +287,31 @@ export class ViewTreeComponent implements OnDestroy {
 
       clearAllSelections(): void {
             this.selectedNodeIds.set(new Map());
+      }
+
+
+      //===============================
+      // ===== Animation Helpers ======
+      //===============================
+
+      /**
+       * Checks if a node is new and should trigger the entrance animation.
+       * Side-effect free to be safe for template usage.
+       */
+      isNodeNew(nodeId: number): boolean {
+            return !this.animatedNodeIds().has(nodeId);
+      }
+
+      /**
+       * Cleans up the .enter class after the CSS animation finishes.
+       * Adds the nodeId to the set of already animated nodes.
+       */
+      onAnimationEnd(nodeId: number): void {
+            const currentSet = new Set(this.animatedNodeIds());
+            if (!currentSet.has(nodeId)) {
+                  currentSet.add(nodeId);
+                  this.animatedNodeIds.set(currentSet);
+            }
       }
 
       private getDeepestSelectedNodeLevel(): number {
