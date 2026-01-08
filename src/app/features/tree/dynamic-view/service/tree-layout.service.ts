@@ -2,39 +2,58 @@ import { Injectable } from "@angular/core";
 import { IDisplayRatios, INodeLayout, ITreeNode, ITreeNodesGroup } from "../model/interface/view-Tree-interfaces";
 
 @Injectable({ providedIn: 'root' })
-export class ViewTreeService {
+export class TreeLayoutService {
 
-      // ====================================================
-      // ====  Prepare Nodes ================================
-      // ====================================================
+      private readonly DisplayMode = {
+            FIRST: 1,
+            SECOND: 2,
+            THIRD: 3
+      } as const;
 
-      getRoot(treeData: ITreeNode[]): ITreeNodesGroup | undefined {
-            const rootNode = treeData.find(n => n.parentId === 0);
-
-            if (!rootNode) return undefined;
-
-            return {
-                  level: rootNode.level,
-                  nodeList: [rootNode] // Only root node in array
-            };
+      getDisplayMode(deepestLevel: number): number {
+            if (deepestLevel === 0 || deepestLevel === 1) return this.DisplayMode.FIRST;
+            if (deepestLevel === 2 || deepestLevel === 3) return this.DisplayMode.SECOND;
+            if (deepestLevel === 4 || deepestLevel === 5) return this.DisplayMode.THIRD;
+            return this.DisplayMode.FIRST;
       }
 
-      getChildren(treeData: ITreeNode[], parentId: number): ITreeNodesGroup | undefined {
-            const children = treeData.filter(n => n.parentId === parentId);
+      calculateLayout(nodeGroupsList: ITreeNodesGroup[], display: number, windowDims: { width: number, height: number }): ITreeNodesGroup[] {
+            let completedNodeGroupList: ITreeNodesGroup[] = [];
 
-            if (children.length === 0) return undefined;
+            for (let groupIndex = 0; groupIndex < nodeGroupsList.length; groupIndex++) {
+                  const nodeGroup = nodeGroupsList[groupIndex];
+                  let currentGroupLevel = nodeGroup.level;
+                  let completedNodeGroup: ITreeNodesGroup | null = null;
 
-            return {
-                  level: children[0].level, // All children at same level
-                  nodeList: children
-            };
+                  if (currentGroupLevel === 0) {
+                        completedNodeGroup = this.addL0NodeLayout(nodeGroup, display, windowDims);
+                  }
+
+                  if (currentGroupLevel === 1 || currentGroupLevel === 2) {
+                        completedNodeGroup = this.addL1L2NodeLayout(nodeGroup, display, windowDims);
+                  }
+
+                  if (currentGroupLevel === 3 || currentGroupLevel === 4) {
+                        completedNodeGroup = this.addL3L4NodeLayout(nodeGroup, display, windowDims);
+                  }
+
+                  if (currentGroupLevel === 5 || currentGroupLevel === 6) {
+                        completedNodeGroup = this.addL5L6NodeLayout(nodeGroup, display, windowDims);
+                  }
+
+                  if (completedNodeGroup) {
+                        completedNodeGroupList.push(completedNodeGroup);
+                  }
+            }
+
+            return completedNodeGroupList;
       }
 
       // ====================================================
-      // ==== Prepare Nodes Styles ==========================
+      // ==== Internal Layout Logic (Refactored) ============
       // ====================================================
 
-      addL0NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
+      private addL0NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
             let node: ITreeNode = nodeGroup.nodeList[0];
             const groupLevel = node.level;
             let nodeLayout: INodeLayout = { leftSpaceX: 0, topSpaceY: 0, nodeWidth: 0, nodeHeight: 0 };
@@ -53,95 +72,50 @@ export class ViewTreeService {
             return nodeGroup;
       }
 
-      addL1L2NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
+      private addL1L2NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
             const groupLevel = nodeGroup.level;
             const nodeList = nodeGroup.nodeList;
 
-            if (nodeList.length === 0) {
-                  console.warn(`nodeGroup Length ` + nodeList.length);
-                  return nodeGroup;
-            }
-
-            if (groupLevel !== 1 && groupLevel !== 2) {
-                  console.warn(`Level ${groupLevel} not supported in addL1L2NodeLayout`);
+            if (nodeList.length === 0 || (groupLevel !== 1 && groupLevel !== 2)) {
                   return nodeGroup;
             }
 
             const displayRatios = this.getGroupOneLayout(display, groupLevel, windowDims);
+            this.applyHorizontalLayout(nodeGroup, displayRatios, windowDims);
 
-            // Calculate total width using correct gaps
-            const totalWidth = (nodeList.length * displayRatios.nodeWidth) + ((nodeList.length - 1) * displayRatios.gap);
-            const startX = Math.max(0, (windowDims.width - totalWidth) / 2);
-
-            for (let i = 0; i < nodeList.length; i++) {
-                  let node: ITreeNode = nodeList[i];
-                  let nodeLayout: INodeLayout = { leftSpaceX: 0, topSpaceY: 0, nodeWidth: 0, nodeHeight: 0 };
-
-                  nodeLayout.nodeHeight = displayRatios.nodeHeight;
-                  nodeLayout.nodeWidth = displayRatios.nodeWidth;
-                  nodeLayout.topSpaceY = displayRatios.topSpaceY;
-
-                  let leftSpace = startX + i * (displayRatios.nodeWidth + displayRatios.gap);
-                  nodeLayout.leftSpaceX = leftSpace;
-
-                  node.layout = nodeLayout;
-            }
-
-            nodeGroup.nodeList = nodeList;
             return nodeGroup;
       }
 
-      addL3L4NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
+      private addL3L4NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
             const groupLevel = nodeGroup.level;
             const nodeList = nodeGroup.nodeList;
 
-            if (nodeList.length === 0) {
-                  console.warn(`nodeGroup Length ` + nodeList.length);
-                  return nodeGroup;
-            }
-
-            if (groupLevel !== 3 && groupLevel !== 4) {
-                  console.warn(`Level ${groupLevel} not supported in addL3L4NodeLayout`);
+            if (nodeList.length === 0 || (groupLevel !== 3 && groupLevel !== 4)) {
                   return nodeGroup;
             }
 
             const displayRatios = this.getGroupTwoLayout(display, groupLevel, windowDims);
-            const totalWidth = (nodeList.length * displayRatios.nodeWidth) + ((nodeList.length - 1) * displayRatios.gap);
-            const startX = Math.max(0, (windowDims.width - totalWidth) / 2);
+            this.applyHorizontalLayout(nodeGroup, displayRatios, windowDims);
 
-            for (let i = 0; i < nodeList.length; i++) {
-                  let node: ITreeNode = nodeList[i];
-                  let nodeLayout: INodeLayout = { leftSpaceX: 0, topSpaceY: 0, nodeWidth: 0, nodeHeight: 0 };
-
-                  nodeLayout.nodeHeight = displayRatios.nodeHeight;
-                  nodeLayout.nodeWidth = displayRatios.nodeWidth;
-                  nodeLayout.topSpaceY = displayRatios.topSpaceY;
-
-                  let leftSpace = startX + i * (displayRatios.nodeWidth + displayRatios.gap);
-                  nodeLayout.leftSpaceX = leftSpace;
-
-                  node.layout = nodeLayout;
-            }
-
-            nodeGroup.nodeList = nodeList;
             return nodeGroup;
       }
 
-      addL5L6NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
+      private addL5L6NodeLayout(nodeGroup: ITreeNodesGroup, display: number, windowDims: { width: number, height: number }): ITreeNodesGroup {
             const groupLevel = nodeGroup.level;
             const nodeList = nodeGroup.nodeList;
 
-            if (nodeList.length === 0) {
-                  console.warn(`nodeGroup Length ` + nodeList.length);
-                  return nodeGroup;
-            }
-
-            if (groupLevel !== 5 && groupLevel !== 6) {
-                  console.warn(`Level ${groupLevel} not supported in addL5L6NodeLayout`);
+            if (nodeList.length === 0 || (groupLevel !== 5 && groupLevel !== 6)) {
                   return nodeGroup;
             }
 
             const displayRatios = this.getGroupThreeLayout(display, groupLevel, windowDims);
+            this.applyHorizontalLayout(nodeGroup, displayRatios, windowDims);
+
+            return nodeGroup;
+      }
+
+      private applyHorizontalLayout(nodeGroup: ITreeNodesGroup, displayRatios: IDisplayRatios, windowDims: { width: number, height: number }): void {
+            const nodeList = nodeGroup.nodeList;
             const totalWidth = (nodeList.length * displayRatios.nodeWidth) + ((nodeList.length - 1) * displayRatios.gap);
             const startX = Math.max(0, (windowDims.width - totalWidth) / 2);
 
@@ -158,21 +132,15 @@ export class ViewTreeService {
 
                   node.layout = nodeLayout;
             }
-
-            nodeGroup.nodeList = nodeList;
-            return nodeGroup;
       }
 
-      //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      // ====================================================
+      // ==== Ratio Calculations (Kept Identical) ===========
+      // ====================================================
 
-      getGroupOneLayout(display: number, groupLevel: number, windowDims: { width: number, height: number }): IDisplayRatios {
+      private getGroupOneLayout(display: number, groupLevel: number, windowDims: { width: number, height: number }): IDisplayRatios {
             let displayRatios: IDisplayRatios = {
-                  nodeWidth: 0,
-                  nodeHeight: 0,
-                  leftSpaceX: 0,
-                  topSpaceY: 0,
-                  gap: 0
+                  nodeWidth: 0, nodeHeight: 0, leftSpaceX: 0, topSpaceY: 0, gap: 0
             };
 
             let width = windowDims.width * 0.12;
@@ -226,14 +194,9 @@ export class ViewTreeService {
             return displayRatios;
       }
 
-
-      getGroupTwoLayout(display: number, groupLevel: number, windowDims: { width: number, height: number }): IDisplayRatios {
+      private getGroupTwoLayout(display: number, groupLevel: number, windowDims: { width: number, height: number }): IDisplayRatios {
             let displayRatios: IDisplayRatios = {
-                  nodeWidth: 0,
-                  nodeHeight: 0,
-                  leftSpaceX: 0,
-                  topSpaceY: 0,
-                  gap: 0
+                  nodeWidth: 0, nodeHeight: 0, leftSpaceX: 0, topSpaceY: 0, gap: 0
             };
 
             let width = windowDims.width * 0.11;
@@ -274,13 +237,9 @@ export class ViewTreeService {
             return displayRatios;
       }
 
-      getGroupThreeLayout(display: number, groupLevel: number, windowDims: { width: number, height: number }): IDisplayRatios {
+      private getGroupThreeLayout(display: number, groupLevel: number, windowDims: { width: number, height: number }): IDisplayRatios {
             let displayRatios: IDisplayRatios = {
-                  nodeWidth: 0,
-                  nodeHeight: 0,
-                  leftSpaceX: 0,
-                  topSpaceY: 0,
-                  gap: 0
+                  nodeWidth: 0, nodeHeight: 0, leftSpaceX: 0, topSpaceY: 0, gap: 0
             };
 
             if (display === 3) {
@@ -307,5 +266,4 @@ export class ViewTreeService {
 
             return displayRatios;
       }
-
 }

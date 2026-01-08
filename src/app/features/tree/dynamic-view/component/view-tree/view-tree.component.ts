@@ -2,11 +2,12 @@ import { Component, computed, inject, signal, OnDestroy, effect, untracked, OnIn
 
 import { INodeLayout, ITreeNode, ITreeNodesGroup } from '../../model/interface/view-Tree-interfaces';
 import { CommonModule } from '@angular/common';
-import { ViewTreeService } from '../../service/ViewTreeService';
+
 import { TreeDataService } from '../../service/tree-data.service';
 import { MockTreeDataService } from '../../service/mock-tree-data.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ApiTreeDataService } from '../../service/api-tree-data.service';
+import { TreeStructureService } from '../../service/tree-structure.service';
+import { TreeLayoutService } from '../../service/tree-layout.service';
+import { TreeConnectionService } from '../../service/tree-connection.service';
 
 @Component({
       selector: 'app-view-tree',
@@ -21,19 +22,12 @@ import { ApiTreeDataService } from '../../service/api-tree-data.service';
 export class ViewTreeComponent implements OnInit, OnDestroy {
 
       //===============================
-      // ===== Constants =====
-
-      private readonly DisplayMode = {
-            FIRST: 1,
-            SECOND: 2,
-            THIRD: 3
-      } as const;
-
-      //===============================
       // ===== Services =====
 
-      private treeService = inject(ViewTreeService);
       private treeDataService = inject(TreeDataService);
+      private structureService = inject(TreeStructureService);
+      private layoutService = inject(TreeLayoutService);
+      private connectionService = inject(TreeConnectionService);
 
       //===============================
       // ===== State Signals =====
@@ -57,58 +51,41 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
       //===============================
       // ===== Derived State (Computed) 
 
-      readonly filteredTreeData = computed(() => this.filterTreeData());
+      readonly filteredTreeData = computed(() => {
+            const rawTreeData = this.treeNodes();
+            const selectedMap = this.selectedNodeIds();
+            const dimensions = { width: this.windowWidth(), height: this.windowHeight() };
+
+            // 1. Get visible hierarchy based on selection
+            const nodeGroups = this.structureService.getVisibleNodeGroups(rawTreeData, selectedMap);
+
+            // 2. Determine display mode logic (depth)
+            // Need deepest level from the selection map to determine global scaling
+            const highestLevel = Math.max(...selectedMap.keys(), 0);
+            // If map is empty, max() is -Infinity, so 0 ensures safety.
+            // But we actually need to check if map is empty before passing to logic or handle it.
+            // The service logic handles fallback, so passing actual max level is fine.
+            // Wait, existing logic used `getDeepestSelectedNodeLevel` which had fallbacks.
+
+            const displayMode = this.layoutService.getDisplayMode(
+                  selectedMap.size > 0 ? highestLevel : 1
+            );
+
+            // 3. Calculate Layout
+            return this.layoutService.calculateLayout(nodeGroups, displayMode, dimensions);
+      });
 
       readonly currentDisplay = computed(() => {
-            return this.getDeepestSelectedNodeLevel();
+            const selectedMap = this.selectedNodeIds();
+            const highestLevel = Math.max(...selectedMap.keys(), 0);
+            return this.layoutService.getDisplayMode(selectedMap.size > 0 ? highestLevel : 1);
       });
 
       readonly selectedNodes = computed(() => this.selectedNodeIds());
 
       // Connections calculation
       readonly treeLinks = computed(() => {
-            const groups = this.filteredTreeData();
-            const visibleNodes = new Map<number, ITreeNode>();
-            const nodeIndices = new Map<number, number>();
-
-            // 1. Index all visible nodes and their positions in their groups
-            groups.forEach(g => {
-                  g.nodeList.forEach((node, index) => {
-                        visibleNodes.set(node.id, node);
-                        nodeIndices.set(node.id, index);
-                  });
-            });
-
-            const links: { d: string, childId: number, childIndex: number }[] = [];
-
-            // 2. Generate links
-            visibleNodes.forEach(node => {
-                  if (node.parentId !== 0 && visibleNodes.has(node.parentId)) {
-                        const parent = visibleNodes.get(node.parentId)!;
-
-                        // Ensure layout exists
-                        if (!node.layout || !parent.layout) return;
-
-                        // Calculate visual centers/connection points
-                        // Parent: Bottom Center
-                        const startX = parent.layout.leftSpaceX + (parent.layout.nodeWidth / 2);
-                        const startY = parent.layout.topSpaceY + parent.layout.nodeHeight;
-
-                        // Child: Top Center
-                        const endX = node.layout.leftSpaceX + (node.layout.nodeWidth / 2);
-                        const endY = node.layout.topSpaceY;
-
-                        // Bezier Curve
-                        const path = this.generateBezierPath(startX, startY, endX, endY);
-                        links.push({
-                              d: path,
-                              childId: node.id,
-                              childIndex: nodeIndices.get(node.id) ?? 0
-                        });
-                  }
-            });
-
-            return links;
+            return this.connectionService.generateConnections(this.filteredTreeData());
       });
 
       // Bounds calculation for scrolling
@@ -134,13 +111,6 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
                   height: maxHeight + 100
             };
       });
-
-      private generateBezierPath(x1: number, y1: number, x2: number, y2: number): string {
-            // Cubic Bezier with control points vertical
-            const cy = (y1 + y2) / 2;
-            return `M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}`;
-      }
-
 
       //===============================
       // ===== Lifecycle =====
@@ -267,11 +237,6 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
             }
       }
 
-
-      private hasChildren(nodeId: number): boolean {
-            return this.treeNodes().some(n => n.parentId === nodeId);
-      }
-
       selectNode(level: number, nodeId: number): void {
             if (level < 0 || level > 6) {
                   console.warn(`Invalid level ${level}. Must be between 0 and 6.`);
@@ -287,115 +252,6 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
             }
 
             this.selectedNodeIds.set(currentMap);
-      }
-
-
-      //===============================
-      //====== Data Filtering =========
-      //===============================
-
-
-      private filterTreeData(): ITreeNodesGroup[] {
-            let nodesGroupList: ITreeNodesGroup[] = [];
-            const selectedMap = this.selectedNodeIds();
-            let display = this.getDeepestSelectedNodeLevel();
-            if (display === -1) display = this.DisplayMode.FIRST;
-
-            const currentTreeData = this.treeNodes();
-            if (currentTreeData.length === 0) return [];
-
-            // L0 - Root (always shown)
-            const l0NodeGroup = this.treeService.getRoot(currentTreeData);
-            if (!l0NodeGroup) return nodesGroupList;
-
-            nodesGroupList.push(l0NodeGroup);
-
-            // L1 - Root children (always shown)
-            const l1NodeGroup = this.treeService.getChildren(
-                  currentTreeData,
-                  l0NodeGroup.nodeList[0]?.id || 0
-            );
-
-            if (l1NodeGroup) {
-                  nodesGroupList.push(l1NodeGroup);
-            }
-
-            // L2 - Children of selected L1
-            const selectedL1Id = selectedMap.get(1);
-            if (selectedL1Id) {
-                  const l2NodeGroup = this.treeService.getChildren(currentTreeData, selectedL1Id);
-                  if (l2NodeGroup) nodesGroupList.push(l2NodeGroup);
-            }
-
-            // L3 - Children of selected L2
-            const selectedL2Id = selectedMap.get(2);
-            if (selectedL2Id) {
-                  const l3NodeGroup = this.treeService.getChildren(currentTreeData, selectedL2Id);
-                  if (l3NodeGroup) nodesGroupList.push(l3NodeGroup);
-            }
-
-            // L4 - Children of selected L3
-            const selectedL3Id = selectedMap.get(3);
-            if (selectedL3Id) {
-                  const l4NodeGroup = this.treeService.getChildren(currentTreeData, selectedL3Id);
-                  if (l4NodeGroup) nodesGroupList.push(l4NodeGroup);
-            }
-
-            // L5 - Children of selected L4
-            const selectedL4Id = selectedMap.get(4);
-            if (selectedL4Id) {
-                  const l5NodeGroup = this.treeService.getChildren(currentTreeData, selectedL4Id);
-                  if (l5NodeGroup) nodesGroupList.push(l5NodeGroup);
-            }
-
-            // L6 - Children of selected L5
-            const selectedL5Id = selectedMap.get(5);
-            if (selectedL5Id) {
-                  const l6NodeGroup = this.treeService.getChildren(currentTreeData, selectedL5Id);
-                  if (l6NodeGroup) nodesGroupList.push(l6NodeGroup);
-            }
-
-            // add layout to List of group of node
-            nodesGroupList = this.addLayoutToCurrentGroups(nodesGroupList, display);
-
-            return nodesGroupList;
-      }
-
-      // ========================================
-
-      addLayoutToCurrentGroups(nodeGroupsList: ITreeNodesGroup[], display: number): ITreeNodesGroup[] {
-
-            let completedNodeGroupList: ITreeNodesGroup[] = [];
-            const windowDims = { width: this.windowWidth(), height: this.windowHeight() };
-
-            for (let groupIndex = 0; groupIndex < nodeGroupsList.length; groupIndex++) {
-
-                  const nodeGroup = nodeGroupsList[groupIndex];
-                  let currentGroupLevel = nodeGroup.level;
-                  let completedNodeGroup: ITreeNodesGroup | null = null;
-
-                  if (currentGroupLevel === 0) {
-                        completedNodeGroup = this.treeService.addL0NodeLayout(nodeGroup, display, windowDims);
-                  }
-
-                  if (currentGroupLevel === 1 || currentGroupLevel === 2) {
-                        completedNodeGroup = this.treeService.addL1L2NodeLayout(nodeGroup, display, windowDims);
-                  }
-
-                  if (currentGroupLevel === 3 || currentGroupLevel === 4) {
-                        completedNodeGroup = this.treeService.addL3L4NodeLayout(nodeGroup, display, windowDims);
-                  }
-
-                  if (currentGroupLevel === 5 || currentGroupLevel === 6) {
-                        completedNodeGroup = this.treeService.addL5L6NodeLayout(nodeGroup, display, windowDims);
-                  }
-
-                  if (completedNodeGroup) {
-                        completedNodeGroupList.push(completedNodeGroup);
-                  }
-            }
-
-            return completedNodeGroupList;
       }
 
 
@@ -456,20 +312,6 @@ export class ViewTreeComponent implements OnInit, OnDestroy {
                   currentSet.add(nodeId);
                   this.animatedNodeIds.set(currentSet);
             }
-      }
-
-      private getDeepestSelectedNodeLevel(): number {
-            const map = this.selectedNodeIds();
-
-            if (map.size === 0) return this.DisplayMode.FIRST;
-
-            const highestLevel = Math.max(...map.keys());
-
-            if (highestLevel === 0 || highestLevel === 1) return this.DisplayMode.FIRST;
-            if (highestLevel === 2 || highestLevel === 3) return this.DisplayMode.SECOND;
-            if (highestLevel === 4 || highestLevel === 5) return this.DisplayMode.THIRD;
-
-            return this.DisplayMode.FIRST; // Fallback
       }
 
 }
