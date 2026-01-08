@@ -1,21 +1,162 @@
+<div class="home-container" *ngIf="currentTab !== 'tree' && currentTab !== 'tree-test'">
 
-<div *ngIf="currentTab !== 'tree' && currentTab !== 'tree-test'">
-      
-      <h1> مـرحــبـا آل عـمــران</h1>
-<P></P>
-<h2> اسـتـكـشـف شــجـرة العـائـلة</h2>
-<p></p>
-<button type="button" class="btn" [ngClass]="currentTab == 'tree'?'btn-success':'btn-secondary'" (click)="showPage('tree')">
-  من هـنا
-</button>
-<p></p>
-<!-- <button type="button" class="btn" [ngClass]="currentTab == 'tree-test'?'btn-success':'btn-secondary'" (click)="showPage('tree-test')">
-  اختبر
-</button> -->
+      <!-- Right Section (Welcome Side) -->
+      <div class="split-section section-right" [class.mobile-hidden]="!isRightSectionVisible">
+            <!-- Header -->
+            <div class="section-header header-right">
+                  <div class="header-corner-box">مـرحــبـا</div>
+                  <div class="header-logo-text">رحــم</div>
+            </div>
+
+            <!-- Circles Container -->
+            <div class="circles-container">
+
+                  <!-- Tree Circle -->
+                  <div class="circle-item item-tree" (click)="showPage('tree')">
+                        <div class="circle-content">
+                              <svg viewBox="0 0 24 24" class="circle-icon">
+                                    <path fill="currentColor"
+                                          d="M11,9V7H9V9H11M13,9V7H15V9H13M13,17V15H11V17H13M21,13C21,11.33 20,9.91 18.63,9.27C19.46,6.61 17.5,3.87 14.71,3.8C14.07,2.1 12.06,1.4 10.45,2.19C9.28,1.21 7.42,1.38 6.43,2.54C5.44,3.7 5.61,5.56 6.77,6.55C4.24,6.71 2.37,8.96 2.53,11.5C2.69,14.03 4.94,15.9 7.47,15.74C7.54,15.74 7.6,15.73 7.67,15.73V18H3V20H10V22H14V20H21V18H16.33V15.71C18.91,15.53 20.84,13.28 20.66,10.7C20.66,10.63 20.66,10.56 20.66,10.5C21.46,11.23 22,12.06 22,13H21Z" />
+                              </svg>
+                              <span class="circle-text">الشجرة</span>
+                        </div>
+                  </div>
+
+                  <!-- Council Circle -->
+                  <div class="circle-item item-council">
+                        <div class="circle-content">
+                              <svg viewBox="0 0 24 24" class="circle-icon">
+                                    <path fill="currentColor"
+                                          d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,6.33 7.73,5.1 10,4.5C6.95,3.22 3.44,4.24 1.84,7.27C1.5,7.92 1.25,8.65 1.13,9.4C1.07,9.75 1.5,9.96 1.82,9.86C3.12,9.45 4.19,8.85 5,8M15,19V21L12.5,22.5L10,21V19H15M19,8C19.86,8.85 20.88,9.45 22.18,9.86C22.5,9.96 22.93,9.75 22.87,9.4C22.75,8.65 22.5,7.92 22.16,7.27C20.56,4.24 17.05,3.22 14,4.5C16.27,5.1 18.44,6.33 19,8M5.5,13C5.5,13.06 5.5,13.12 5.5,13.18C5.5,13.59 5.86,13.88 6.25,13.79C6.88,13.65 7.5,13.56 8.08,13.5C8.83,14.67 9.88,15.65 11.13,16.29V17H13.88V16.29C15.13,15.65 16.17,14.67 16.92,13.5C17.5,13.56 18.12,13.65 18.75,13.79C19.14,13.88 19.5,13.59 19.5,13.18C19.5,13.12 19.5,13.06 19.5,13C19.5,10.79 17.71,9 15.5,9H9.5C7.29,9 5.5,10.79 5.5,13Z" />
+                              </svg>
+                              <span class="circle-text">المجلس</span>
+                        </div>
+                  </div>
+
+                  <!-- Solidarity Circle -->
+                  <div class="circle-item item-solidarity">
+                        <div class="circle-content">
+                              <svg viewBox="0 0 24 24" class="circle-icon">
+                                    <path fill="currentColor"
+                                          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                              </svg>
+                              <span class="circle-text">التكافل</span>
+                        </div>
+                  </div>
+
+            </div>
+
+            <!-- Personal Office (Bottom Block) -->
+            <div class="bottom-block-container right-block">
+                  <div class="rect-item item-office">
+                        <div class="rect-text">المكتب<br>الشخصي</div>
+                  </div>
+            </div>
+
+            <!-- Mobile Toggle (To go to Left Section) - Styled as Rectangle Arrow Box -->
+            <button class="mobile-toggle-btn arrow-box-style" (click)="toggleSection()">
+                  <svg viewBox="0 0 24 24" class="toggle-icon-rect">
+                        <path fill="currentColor"
+                              d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
+                  </svg>
+            </button>
+      </div>
+
+
+      <!-- Left Section (Discover Side) -->
+      <div class="split-section section-left" [class.mobile-hidden]="isRightSectionVisible">
+            <!-- Header -->
+            <div class="section-header header-left">
+                  <div class="header-logo-text">آل عـمــران</div>
+                  <div class="header-corner-box">تسجيل الخروج</div>
+            </div>
+
+            <!-- Circles Container -->
+            <div class="circles-container">
+
+                  <!-- Discover Circle -->
+                  <div class="circle-item item-discover">
+                        <div class="circle-content">
+                              <svg viewBox="0 0 24 24" class="circle-icon">
+                                    <path fill="currentColor"
+                                          d="M12,10.9C11.39,10.9 10.9,11.39 10.9,12C10.9,12.61 11.39,13.1 12,13.1C12.61,13.1 13.1,12.61 13.1,12C13.1,11.39 12.61,10.9 12,10.9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M14.19,14.19L6,18L9.81,9.81L18,6L14.19,14.19Z" />
+                              </svg>
+                              <span class="circle-text">اكتشف</span>
+                        </div>
+                  </div>
+
+                  <!-- Works Circle -->
+                  <div class="circle-item item-works">
+                        <div class="circle-content">
+                              <svg viewBox="0 0 24 24" class="circle-icon">
+                                    <path fill="currentColor"
+                                          d="M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z" />
+                              </svg>
+                              <span class="circle-text">الأعمال</span>
+                        </div>
+                  </div>
+
+                  <!-- Map Circle -->
+                  <div class="circle-item item-map">
+                        <div class="circle-content">
+                              <svg viewBox="0 0 24 24" class="circle-icon">
+                                    <path fill="currentColor"
+                                          d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19C12,19 6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6M20,19C20,21.21 16.42,23 12,23C7.58,23 4,21.21 4,19C4,17.71 5.22,16.56 7.11,15.83L7.75,16.74C6.67,17.19 6,17.81 6,18.5C6,19.88 8.69,21 12,21C15.31,21 18,19.88 18,18.5C18,17.81 17.33,17.19 16.25,16.74L16.89,15.83C18.78,16.56 20,17.71 20,19Z" />
+                              </svg>
+                              <span class="circle-text">الخريطة</span>
+                        </div>
+                  </div>
+
+            </div>
+
+            <!-- Management (Bottom Block) -->
+            <div class="bottom-block-container left-block">
+                  <div class="rect-item item-management">
+                        <div class="rect-text">ادارة<br>البرنامج</div>
+                  </div>
+            </div>
+
+
+            <!-- Mobile Toggle (To go back to Right Section) -->
+            <button class="mobile-toggle-btn arrow-box-style" (click)="toggleSection()">
+                  <svg viewBox="0 0 24 24" class="toggle-icon-rect">
+                        <path fill="currentColor"
+                              d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
+                  </svg>
+            </button>
+      </div>
+
+
+      <!-- Center Decoration (Desktop Only) - Kept for reference but likely hidden if user requested full removal, user said "Desktop View Cleanup: Remove the switch button completely". 
+       "Remove the vertical / middle divider line".
+       I will remove the visible divider in CSS.
+       I will HIDE or REMOVE this center decoration based on interpretation. 
+       "The switch button layout must match exactly the desktop version... Only the visibility behavior differs".
+       This implies the desktop version HAS something that looks like the switch button.
+       So I should KEEP the center-decoration on Desktop (as visual only), but remove the 'middle divider line'.
+       Wait, "Remove the switch button completely" (On Desktop). The center decoration IS the switch button visually (arrows).
+       If I remove it, then what does mobile match?
+       Maybe mobile matches the *screenshot provided originally* which had arrows.
+       I will keep the `middle-decoration` structure for potential mobile styling reuse, but verify visibility rules.
+  -->
+      <div class="center-decoration">
+            <div class="arrow-group">
+                  <svg viewBox="0 0 24 24" class="center-arrows">
+                        <path fill="#006b50"
+                              d="M5.59,7.41L10.18,12L5.59,16.59L7,18L13,12L7,6L5.59,7.41M16,6L14.59,7.41L19.17,12L14.59,16.59L16,18L22,12L16,6Z" />
+                  </svg>
+                  <svg viewBox="0 0 24 24" class="center-arrows">
+                        <path fill="#006b50"
+                              d="M5.59,7.41L10.18,12L5.59,16.59L7,18L13,12L7,6L5.59,7.41M16,6L14.59,7.41L19.17,12L14.59,16.59L16,18L22,12L16,6Z"
+                              transform="scale(-1, 1) translate(-24, 0)" />
+                  </svg>
+            </div>
+      </div>
+
 </div>
 
 
+<!-- TREE VIEW -->
 <div class="col-12" *ngIf="currentTab == 'tree'">
-  <app-tree></app-tree>
+      <app-tree></app-tree>
 </div>
-

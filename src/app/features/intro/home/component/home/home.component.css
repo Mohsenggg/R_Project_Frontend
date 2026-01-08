@@ -1,98 +1,385 @@
-/* Overall page background */
-
+@font-face {
+      font-family: 'Arslan Wessam A';
+      src: url('/assets/fonts/Arslan-Wessam-A.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+}
 
 :host {
-  display: block;
-  min-height: 100vh;
-  background-color: #e0f7f1; /* mint green background */
-  color: #333;
-  text-align: center;
-  /* padding: 2rem; */
-  font-family: 'Arial', sans-serif;
-  overflow: hidden;
+      display: block;
+      min-height: 100vh;
+      /* Premium subtle geometric background */
+      background-color: #fdfdfd;
+      background-image:
+            radial-gradient(#006b50 0.5px, transparent 0.5px),
+            radial-gradient(#006b50 0.5px, #fdfdfd 0.5px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      background: radial-gradient(circle at center, #ffffff 0%, #f7f9f8 100%);
+
+      font-family: 'Arslan Wessam A', 'Arial', sans-serif;
+      /* Global font application */
+      overflow-x: hidden;
+      direction: rtl;
+      /* Arabic Layout */
 }
 
-/* Fade and slide animation */
-@keyframes fadeSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Animations Keyframes */
+@keyframes slideUpFade {
+      from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+      }
+
+      to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+      }
 }
 
-/* Gold underline effect */
-.title-underline {
-  position: relative;
-  display: inline-block;
+@keyframes floatIdle {
+      0% {
+            transform: translateY(0);
+      }
+
+      50% {
+            transform: translateY(-5px);
+      }
+
+      100% {
+            transform: translateY(0);
+      }
 }
 
-.title-underline::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -8px;
-  width: 0;
-  height: 4px;
-  background-color: #bfa035; /* gold */
-  border-radius: 2px;
-  transition: width 0.5s ease;
+@keyframes floatIdleOffset {
+      0% {
+            transform: translateY(0);
+      }
+
+      50% {
+            transform: translateY(5px);
+      }
+
+      100% {
+            transform: translateY(0);
+      }
 }
 
-.title-underline:hover::after {
-  width: 100%;
+/* Main Container */
+.home-container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      position: relative;
 }
 
-/* Main title */
-h1 {
-  color: #006b50; /* dark mint */
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  animation: fadeSlideIn 2s ease forwards;
+/* Split Sections */
+.split-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      position: relative;
+      transition: transform 0.3s ease-in-out;
 }
 
-/* Subtitle */
-h2 {
-  color: #bfa035; /* gold */
-  font-size: 1.8rem;
-  margin-bottom: 2rem;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-  animation: fadeSlideIn 8s ease ;
-  animation-delay: 0s;
+.section-right {
+      /* Removed border-left as requested "Remove the vertical / middle divider line" */
+      border-left: none;
 }
 
-/* Button styling */
-button.btn {
-  background-color: #bfa035; /* gold */
-  color: white;
-  border:#006b50 solid 6px;
-  padding: 0.8rem 2rem;
-  font-size: 1.2rem;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  animation: fadeSlideIn 8s ease ;
-  animation-delay: 0s;
-  opacity: 0;
-  transform: translateY(-20px);
+/* Headers */
+.section-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 2rem;
+      padding: 0 1rem;
+      align-items: flex-start;
+      animation: slideUpFade 0.8s ease-out forwards;
 }
 
-button.btn:hover {
-  background-color: #006b50;
-  transform: scale(1.05);
+.header-corner-box {
+      background: linear-gradient(135deg, #fceea7 0%, #fae685 100%);
+      color: #006b50;
+      padding: 0.8rem 2.5rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 0 0 20px 20px;
+      margin-top: -1rem;
+      box-shadow: 0 4px 15px rgba(0, 107, 80, 0.1);
+      letter-spacing: 0.5px;
 }
 
-/* Show button after load animation */
-button.btn {
-  opacity: 1;
-  transform: translateY(0);
+/* Central "Logo" Text */
+.header-logo-text {
+      /* Explicitly enforce Arslan Wessam */
+      font-family: 'Arslan Wessam A', sans-serif;
+      font-size: 3.5rem;
+      /* Large size */
+
+      /* Gold Gradient Text Effect */
+      background: linear-gradient(45deg, #bfa035, #d4b84b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #bfa035;
+
+      font-weight: normal;
+      margin-top: 0.5rem;
+      filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.1));
+      line-height: 1.2;
 }
 
-/* Remove extra spacing from empty <p> tags */
-p:empty {
-  display: none;
+/* Circles Container */
+.circles-container {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      align-items: center;
+      width: 100%;
+      flex-grow: 1;
+      justify-content: flex-start;
+      padding-top: 2rem;
+}
+
+/* Circle Item Styling */
+.circle-item {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(145deg, #fff3b5, #e3d696);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      opacity: 0;
+      box-shadow:
+            5px 5px 15px rgba(191, 160, 53, 0.2),
+            -5px -5px 15px rgba(255, 255, 255, 0.8),
+            inset 2px 2px 5px rgba(255, 255, 255, 0.5);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Staggered Animations */
+.section-right .item-tree {
+      animation: slideUpFade 0.6s ease-out 0.2s forwards, floatIdle 6s ease-in-out 1s infinite;
+      margin-right: 50px;
+}
+
+.section-right .item-council {
+      animation: slideUpFade 0.6s ease-out 0.4s forwards, floatIdleOffset 7s ease-in-out 1s infinite;
+      margin-left: 50px;
+}
+
+.section-right .item-solidarity {
+      animation: slideUpFade 0.6s ease-out 0.6s forwards, floatIdle 6s ease-in-out 1s infinite;
+      margin-right: 50px;
+}
+
+.section-left .item-discover {
+      animation: slideUpFade 0.6s ease-out 0.3s forwards, floatIdleOffset 6s ease-in-out 1.2s infinite;
+      margin-left: 50px;
+}
+
+.section-left .item-works {
+      animation: slideUpFade 0.6s ease-out 0.5s forwards, floatIdle 7s ease-in-out 1.2s infinite;
+      margin-right: 50px;
+}
+
+.section-left .item-map {
+      animation: slideUpFade 0.6s ease-out 0.7s forwards, floatIdleOffset 6s ease-in-out 1.2s infinite;
+      margin-left: 50px;
+}
+
+.circle-item:hover {
+      transform: scale(1.1) translateY(-5px);
+      background: linear-gradient(145deg, #fff6c9, #ebde9e);
+      box-shadow: 0 15px 25px rgba(191, 160, 53, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.circle-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #006b50;
+      z-index: 2;
+}
+
+.circle-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.6rem;
+      filter: drop-shadow(0 2px 2px rgba(0, 107, 80, 0.1));
+      transition: transform 0.3s ease;
+}
+
+.circle-item:hover .circle-icon {
+      transform: rotate(-5deg) scale(1.1);
+}
+
+.circle-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+      line-height: 1.1;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Bottom Rectangular Blocks */
+.bottom-block-container {
+      position: absolute;
+      width: 100%;
+      display: flex;
+}
+
+.right-block {
+      /* Right panel bottom corner */
+      bottom: 2rem;
+      right: 0;
+      justify-content: flex-start;
+      /* Start of RTL is Right */
+      padding-right: 2rem;
+}
+
+.left-block {
+      /* Left panel bottom "Far Left" */
+      bottom: 2rem;
+      left: 0;
+      /* Align directly to the left edge */
+      right: auto;
+      justify-content: flex-end;
+      /* End of RTL is Left */
+      padding-left: 1rem;
+      /* minimal padding to not touch the edge */
+}
+
+/* If justify-content flex-end/flex-start is confusing in RTL, strict absolute on children works too */
+/* Let's be strict: */
+.right-block .rect-item {
+      margin-right: 0;
+      margin-left: auto;
+}
+
+/* Sit on right */
+.left-block .rect-item {
+      margin-left: 0;
+      margin-right: auto;
+}
+
+/* Sit on left */
+
+
+.rect-item {
+      background: linear-gradient(135deg, #fceea7, #fae685);
+      border-radius: 20px;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      min-width: 160px;
+      text-align: center;
+      color: #006b50;
+      font-weight: bold;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: slideUpFade 0.6s ease-out 0.8s forwards;
+}
+
+.rect-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Center Decoration (Arrows) */
+.center-decoration {
+      display: none;
+      /* Removed on desktop */
+}
+
+
+/* Mobile Toggle */
+.mobile-toggle-btn {
+      display: none;
+      /* Hidden on Desktop */
+}
+
+/* Mobile Specifics */
+@media (max-width: 768px) {
+      .home-container {
+            flex-direction: column;
+            overflow: hidden;
+      }
+
+      .split-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-left: none;
+            padding: 1rem;
+            overflow-y: auto;
+      }
+
+      .mobile-hidden {
+            display: none !important;
+      }
+
+      /* Mobile Toggle: Match Desktop Arrow Style (Rectangular yellow box) */
+      .mobile-toggle-btn.arrow-box-style {
+            display: flex;
+            position: fixed;
+            /* Vertically centered like desktop */
+            top: 50%;
+            bottom: auto;
+            transform: translateY(-50%);
+
+            width: auto;
+            height: auto;
+            z-index: 999;
+
+            /* Decoration Style Copied */
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 8px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+            /* Consistency: Always anchor to the RIGHT side (RTL Start) */
+            right: 0;
+            left: auto;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            padding-right: 15px;
+      }
+
+      /* Icon rotation for direction context */
+      /* Right Section (visible) -> Arrow points Left (Correct default) */
+      /* Left Section (visible) -> Arrow points Right */
+      .section-left .toggle-icon-rect {
+            transform: rotate(180deg);
+      }
+
+      .toggle-icon-rect {
+            width: 32px;
+            height: 32px;
+            color: #006b50;
+      }
+
+      .circles-container {
+            padding-bottom: 120px;
+      }
+
+      /* Reduce logo text size on mobile to fit "Al Imran" on one line */
+      .header-logo-text {
+            font-size: 2.2rem;
+            margin-top: 5px;
+      }
 }

@@ -3,22 +3,23 @@ import { TreeComponent } from "../../../../tree/classic-view/component/tree/tree
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [TreeComponent, CommonModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+      selector: 'app-home',
+      standalone: true,
+      imports: [TreeComponent, CommonModule],
+      templateUrl: './home.component.html',
+      styleUrl: './home.component.css'
 })
 export class HomeComponent {
 
+      currentTab: string = "";
+      isRightSectionVisible: boolean = true; // Default to showing right section (Welcome/Tree side)
 
-  currentTab : string = "";
+      showPage(page: string) {
+            this.currentTab = page;
+      }
 
-
-
-
-  showPage(page : string){
-    this.currentTab = page;
-  }
+      toggleSection(): void {
+            this.isRightSectionVisible = !this.isRightSectionVisible;
+      }
 
 }
