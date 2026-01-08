@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IDisplayRatios, INodeLayout, ITreeNode, ITreeNodesGroup } from "../model/interface/view-Tree-interfaces";
+import { IDisplayRatios, INodeLayout, ITreeNode, ITreeNodesGroup } from "../../model/interface/view-Tree-interfaces";
 
 @Injectable({ providedIn: 'root' })
 export class TreeLayoutService {
@@ -15,6 +15,20 @@ export class TreeLayoutService {
             if (deepestLevel === 2 || deepestLevel === 3) return this.DisplayMode.SECOND;
             if (deepestLevel === 4 || deepestLevel === 5) return this.DisplayMode.THIRD;
             return this.DisplayMode.FIRST;
+      }
+
+      getNodeStyle(node: ITreeNode): Record<string, any> {
+            let nodeLayout: INodeLayout = { leftSpaceX: 0, topSpaceY: 0, nodeWidth: 0, nodeHeight: 0 }
+            if (node.layout) {
+                  nodeLayout = node.layout;
+            }
+
+            return {
+                  'width.px': nodeLayout.nodeWidth,
+                  'height.px': nodeLayout.nodeHeight,
+                  'left.px': nodeLayout.leftSpaceX,
+                  'top.px': nodeLayout.topSpaceY,
+            };
       }
 
       calculateLayout(nodeGroupsList: ITreeNodesGroup[], display: number, windowDims: { width: number, height: number }): ITreeNodesGroup[] {

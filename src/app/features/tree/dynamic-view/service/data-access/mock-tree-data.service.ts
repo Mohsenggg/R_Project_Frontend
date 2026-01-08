@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { TreeDataService } from './tree-data.service';
-import { ITreeNode } from '../model/interface/view-Tree-interfaces';
-import { treeData } from '../model/data/treeData';
+import { TreeDataService } from '../tree-data.service';
+import { ITreeNode } from '../../model/interface/view-Tree-interfaces';
+import { treeData } from '../../model/data/treeData';
 
 @Injectable({
       providedIn: 'root'

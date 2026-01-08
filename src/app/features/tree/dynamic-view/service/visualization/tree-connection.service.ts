@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ITreeNode, ITreeNodesGroup } from "../model/interface/view-Tree-interfaces";
+import { ITreeNode, ITreeNodesGroup } from "../../model/interface/view-Tree-interfaces";
 
 @Injectable({ providedIn: 'root' })
 export class TreeConnectionService {
