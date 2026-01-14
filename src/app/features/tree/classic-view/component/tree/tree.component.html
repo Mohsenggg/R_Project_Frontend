@@ -1,30 +1,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<div class="side-controls">
+      <div class="side-btn" routerLink="/vTree">الـعـرض الـتـفـاعـلـي</div>
+      <div class="side-btn" routerLink="/home2">الصـفحة السابـقة</div>
+</div>
+
 <div class="zoom-controls">
-      <button (click)="zoomIn()">+</button>
-      <button (click)="zoomOut()">-</button>
+      <button (click)="zoomIn()" class="btn-zoom" title="Zoom In">
+            <svg viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+            </svg>
+      </button>
+      <button (click)="zoomOut()" class="btn-zoom" title="Zoom Out">
+            <svg viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M19,13H5V11H19V13Z" />
+            </svg>
+      </button>
 </div>
 
 <!-- Container for tree layout -->
-<div #treeContainer class="tree-container">      
-      <!-- Zoomed Wrapper -->
-      <div [style.transform]="'scale(' + zoomLevel + ')'" style="transform-origin: 0 0; position: relative;">            
-            
-            
-            
-            <!-- SVG Connections -->
-            <svg class="tree-svg">
-                  <line *ngFor="let line of connectionLines" [attr.x1]="line.x1" [attr.y1]="line.y1" [attr.x2]="line.x2"
-                        [attr.y2]="line.y2" stroke="#d4af37" stroke-width="2" />
-            </svg>
+<div #treeContainer class="tree-container">
+      <!-- Sizer for scrolling -->
+      <div class="zoom-sizer" [style.width.px]="treeWidth * zoomLevel" [style.height.px]="(treeHeight * zoomLevel)">
 
-            <!-- Family Tree Rendering -->
-            <ng-container *ngFor="let member of familyTree">
-                  <ng-container *ngTemplateOutlet="renderMember; context: { $implicit: member }"></ng-container>
-            </ng-container>
-      
+            <!-- Zoomed Content -->
+            <div [style.transform]="'scale(' + zoomLevel + ')'"
+                  style="transform-origin: 0 0; position: absolute; left:0;" [style.top.px]="verticalOffset"
+                  [style.width.px]="treeWidth" [style.height.px]="treeHeight">
 
-      
+
+                  <!-- SVG Connections -->
+                  <svg class="tree-svg">
+                        <line *ngFor="let line of connectionLines" [attr.x1]="line.x1" [attr.y1]="line.y1"
+                              [attr.x2]="line.x2" [attr.y2]="line.y2" stroke="#d4af37" stroke-width="2" />
+                  </svg>
+
+                  <!-- Family Tree Rendering -->
+                  <ng-container *ngFor="let member of familyTree">
+                        <ng-container *ngTemplateOutlet="renderMember; context: { $implicit: member }"></ng-container>
+                  </ng-container>
+
+            </div>
+
       </div>
 </div>
 
@@ -91,10 +108,10 @@
 
 
 
-
+<!-- 
 <button (click)="onSave()">
       💾 Save Tree
-</button>
+</button> -->
 
 
 

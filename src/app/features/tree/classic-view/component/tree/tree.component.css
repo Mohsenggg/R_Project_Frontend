@@ -1,204 +1,327 @@
 @import url(https://fonts.googleapis.com/earlyaccess/amiri.css);
+@import url(https://fonts.googleapis.com/earlyaccess/scheherazade.css);
 
 
 /* -------------------------- */
 
+.side-controls {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+}
+
+.side-btn {
+      /* Premium Look */
+      background: linear-gradient(135deg, #1b3a24 0%, #244b30 100%);
+      color: #ffffff;
+      padding: 12px 24px;
+      font-family: 'Scheherazade', serif;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1;
+      white-space: nowrap;
+
+      /* Shape */
+      border-radius: 50px;
+      border: 3px solid #eebf3680;
+
+      /* Effects */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      backdrop-filter: blur(5px);
+}
+
+/* Hover State */
+.side-btn:hover {
+      background: linear-gradient(135deg, #244b30 0%, #2f5f3f 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      border-color: #eebf3680;
+      /* Subtle gold hint */
+}
+
+/* Active State */
+.side-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1000px) {
+      .side-controls {
+            left: 15px;
+            top: 15px;
+            gap: 10px;
+      }
+
+      .side-btn {
+            font-size: 1rem;
+            padding: 8px 20px;
+            /* Keep premium background */
+      }
+}
+
+@media (max-width: 688px) {
+      .side-controls {
+            left: 12px;
+            top: 12px;
+      }
+
+      .side-btn {
+            font-size: 0.9rem;
+            padding: 6px 14px;
+            border-radius: 40px;
+      }
+}
+
 
 :host {
-  font-family: 'Amiri', serif;
-  font-weight: bold;
+      font-family: 'Amiri', serif;
+      font-weight: bold;
 }
 
 
 
 /* Member card */
 .member-card {
-  position: absolute;
-    width: 160px;
-    height: 120px;
-    background-color: #065232;
-    border: 16px solid #b29124;
-    border-radius: 30%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: grab;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    user-select: none;
+      position: absolute;
+      width: 160px;
+      height: 120px;
+      background-color: #065232;
+      border: 16px solid #b29124;
+      border-radius: 30%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      user-select: none;
 
 }
 
 
 /* Hover effect */
 .member-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Selected effect */
 .member-card.selected {
-  border: 3px solid #00b894; /* dark mint border */
-  box-shadow: 0 0 15px rgba(0, 184, 148, 0.7);
+      border: 3px solid #00b894;
+      /* dark mint border */
+      box-shadow: 0 0 15px rgba(0, 184, 148, 0.7);
 
 }
 
 /* Member name text */
 .member-card p {
-  margin: 0;
-  padding: 0;
-  font-size: 2.2rem;
-  color: #fde8a3;
-  font-weight: bold;
-  font-family: 'Amiri', serif;
+      margin: 0;
+      padding: 0;
+      font-size: 2.2rem;
+      color: #fde8a3;
+      font-weight: bold;
+      font-family: 'Amiri', serif;
 
 }
 
 
 
 .tree-container {
-     background-image: linear-gradient(#663400, #004117);
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: auto;
+      background-image: linear-gradient(#663400, #004117);
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
 }
 
 .zoom-wrapper {
-  transition: transform 0.2s ease;
+      transition: transform 0.2s ease;
 }
+
+/* Zoom Sizer Wrapper */
+.zoom-sizer {
+      position: relative;
+      /* Ensure it takes up space for scrolling */
+      overflow: hidden;
+      margin: 0 auto;
+      /* Align Top, Center Horizontal */
+}
+
+/* Zoom Controls Container */
+
+/* Zoom Controls Container */
 .zoom-controls {
+      position: fixed;
+      /* Move to bottom-right or top-right to avoid conflict? User said top-left check constraints. 
+       "The tree loads fully visible... zoom controls... Evaluate... assess usefulness... recommend improvements (placement)"
+       Current was top-left.
+       I will move to bottom-right for better ergonomics and to avoid the "Back" buttons I added in the other view (even though different component, consistency helps).
+       OR Keep top-right. Top-left often has navigation.
+       Let's try Top-Right or Bottom-Right. Bottom-Right is standard for maps/trees.
+    */
+      bottom: 20px;
+      right: 20px;
+      top: auto;
+      left: auto;
 
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    border: 7px solid #ffde71;
-    gap: 10px;
-    margin-top: 1rem;
-    margin-left: 1rem;
-    background: #623501;
-    padding: 0.8vh;
-    border-radius: 90px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      /* Clean look */
+      background: transparent;
+      border: none;
+      padding: 0;
 }
 
+/* New Zoom Buttons */
+.btn-zoom {
+      background: linear-gradient(135deg, #1b3a24 0%, #244b30 100%);
+      border: 2px solid #b29124;
+      color: #ffffff;
 
-.zoom-controls button {
-  
-    background-color: #fff;
-    border: 5px solid #ffde71;
-    color: #bfa035;
-    padding: 0.5vw 1.5vw;
-    border-radius: 90px;
-    font-size: 3vw;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    min-width: 5vw;
-    min-height: 5vw;
-    max-width: 20vw;
-    max-height: 20vw;
-    margin: 0.7vh 0.5vh;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      /* Circle */
 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+      padding: 8px;
+      /* For SVG */
+}
+
+.btn-zoom:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #244b30 0%, #2f5f3f 100%);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.btn-zoom:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-zoom svg {
+      width: 24px;
+      height: 24px;
 }
 
 
 .zoom-content {
-  position: relative;
-  
-  transition: transform 0.2s ease;
+      position: relative;
+
+      transition: transform 0.2s ease;
 }
 
 .tree-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3000px; /* or a large enough value */
-  height: 3000px;
-  overflow: visible;
-  pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
 }
 
 
 
 /* Edit panel */
 .edit-panel {
-  position: absolute;
-  width: 200px;
-  background-color: #fff;
-  border: 2px solid #00b894; /* gold border */
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+      position: absolute;
+      width: 200px;
+      background-color: #fff;
+      border: 2px solid #00b894;
+      /* gold border */
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
 }
 
 /* Edit panel title */
 .edit-panel h4 {
-  margin-top: 0;
-  padding: 10px;
-  color: #ffffff; /* dark mint */
-  background-color: #00b894; /* gold border */
-  border-radius: 5px;
+      margin-top: 0;
+      padding: 10px;
+      color: #ffffff;
+      /* dark mint */
+      background-color: #00b894;
+      /* gold border */
+      border-radius: 5px;
 
 
 }
 
 /* Edit inputs */
 .edit-panel input {
-  width: 90%;
-  padding: 0.4rem;
-  margin-top: 0.3rem;
-  margin-bottom: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+      width: 90%;
+      padding: 0.4rem;
+      margin-top: 0.3rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
 }
 
 /* Edit buttons */
 .edit-panel button {
-  background-color: #bfa035; /* gold */
-  border: none;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 0.3rem;
+      background-color: #bfa035;
+      /* gold */
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin-top: 0.3rem;
 }
 
 .edit-panel button:hover {
-  background-color: #d4af37;
+      background-color: #d4af37;
 }
 
 
 /* Children list in edit panel */
 .edit-panel ul {
-  padding-left: 1rem;
-  text-align: left;
+      padding-left: 1rem;
+      text-align: left;
 }
 
 .edit-panel li {
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
 }
 
 button {
-  background-color: #bfa035; /* gold */
-  border: none;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 0.3rem;
+      background-color: #bfa035;
+      /* gold */
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin-top: 0.3rem;
 }
 
- button:hover {
-  background-color: #16bf5a;
+button:hover {
+      background-color: #16bf5a;
 }
 
 .member-card:active {
-  cursor: grabbing;
+      cursor: grabbing;
 }
