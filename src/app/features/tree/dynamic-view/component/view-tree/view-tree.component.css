@@ -30,6 +30,26 @@
       transition: width 0.3s ease, height 0.3s ease;
 }
 
+
+.sidebar-btn {
+      background-color: #556b5d;
+      /* Block color from Image 2 */
+      color: #ffffff;
+      padding: 0.8rem 1rem;
+      font-size: 1.2rem;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: bold;
+
+      /* Fixed position on the left side */
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      z-index: 1000;
+}
+
 .tree-connectors {
       position: absolute;
       top: 0;
@@ -123,6 +143,7 @@
       animation: cardEntrance 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       animation-delay: calc(var(--item-index, 0) * 50ms);
 }
+
 
 /* Entrance animation */
 @keyframes cardEntrance {

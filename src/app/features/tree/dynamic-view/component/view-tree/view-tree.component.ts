@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal, OnDestroy, effect, untracked, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { INodeLayout, ITreeNode, ITreeNodesGroup } from '../../model/interface/view-Tree-interfaces';
 import { CommonModule } from '@angular/common';
@@ -14,7 +15,7 @@ import { TreeDataService } from '../../service/data-access/tree-data.service';
 @Component({
       selector: 'app-view-tree',
       standalone: true,
-      imports: [CommonModule],
+      imports: [CommonModule, RouterLink],
       templateUrl: './view-tree.component.html',
       styleUrl: './view-tree.component.css',
       providers: [
