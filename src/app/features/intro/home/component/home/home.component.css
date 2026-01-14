@@ -7,7 +7,7 @@
 
 :host {
       display: block;
-      min-height: 100vh;
+      height: 100vh;
       /* Premium subtle geometric background */
       background-color: #fdfdfd;
       background-image:
@@ -19,7 +19,7 @@
 
       font-family: 'Arslan Wessam A', 'Arial', sans-serif;
       /* Global font application */
-      overflow-x: hidden;
+      overflow: hidden;
       direction: rtl;
       /* Arabic Layout */
 }

@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/earlyaccess/scheherazade.css');
+
+:host {
+      display: block;
+      font-family: 'Scheherazade', serif;
+      /* Direction is RTL for Arabic */
+      direction: rtl;
+}
+
+/* Variables matching the dark green and gold theme */
+:root {
+      --rap-dark-green: #1b3a24;
+      /* Approximate deep green from screenshot */
+      --rap-gold: #eebf36;
+      /* Golden yellow */
+      --rap-bg: #ffffff;
+}
+
+/* Global Reset for this component */
+* {
+      box-sizing: border-box;
+}
+
+.rahem-background {
+      background-color: #ffffff;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+      /* Prevent horizontal scroll */
+}
+
+.rahem-container {
+      width: 100%;
+      max-width: 100%;
+      /* Default full width */
+      position: relative;
+      display: flex;
+      flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background-color: #1b3a24;
+      height: 80px;
+}
+
+.menu-icon {
+      cursor: pointer;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+}
+
+.nav-icon {
+      width: 36px;
+      height: 36px;
+}
+
+.logo-text {
+      font-family: 'Scheherazade', serif;
+      font-size: 2.5rem;
+      color: #eebf36;
+      /* Gold color */
+      font-weight: bold;
+      line-height: 1;
+}
+
+/* Content */
+.content {
+      flex: 1;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+}
+
+.page-title {
+      color: #1b3a24;
+      /* Dark text for title on white background */
+      font-size: 2.8rem;
+      margin-bottom: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 1rem;
+}
+
+.cards-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      /* Large gap */
+      max-width: 600px;
+}
+
+/* Card Styles */
+.card {
+      background-color: #1b3a24;
+      border-radius: 35px;
+      /* Large radius */
+      padding: 1.5rem;
+      position: relative;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+      overflow: visible;
+      /* Allow badge to stick out */
+}
+
+.card:hover {
+      transform: translateY(-2px);
+}
+
+.card-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0.5rem;
+}
+
+/* Badge */
+.card-badge {
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      /* Left side */
+      background: linear-gradient(135deg, #eebf36 0%, #cc9d1a 100%);
+      color: #ffffff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.2;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      border: 1px solid #ffffff;
+      min-width: 50px;
+      z-index: 10;
+}
+
+.plus {
+      font-size: 0.9em;
+      vertical-align: middle;
+      margin-left: 2px;
+}
+
+.card-text {
+      color: #ffffff;
+      font-size: 2.2rem;
+      font-weight: bold;
+      text-align: center;
+      flex: 1;
+      margin-right: 0.5rem;
+}
+
+.card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+}
+
+.card-icon svg {
+      width: 65px;
+      height: 65px;
+}
+
+/* Footer */
+.footer {
+      background-color: #1b3a24;
+      color: #ffffff;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      width: 100%;
+}
+
+/* Sidebar */
+.sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s;
+      z-index: 200;
+}
+
+.sidebar-overlay.open {
+      opacity: 1;
+      visibility: visible;
+}
+
+.sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 280px;
+      background-color: #1b3a24;
+      /* Dark green */
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      padding: 0;
+      /* Reset padding */
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+}
+
+.sidebar.open {
+      transform: translateX(0);
+}
+
+.sidebar-header {
+      display: flex;
+      align-items: center;
+      /* Header in sidebar also dark green, maybe separate section? */
+      /* In Figma, it looks seamless. */
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1rem;
+}
+
+.profile-icon {
+      margin-left: 1rem;
+}
+
+.user-svg {
+      width: 30px;
+      /* Smaller icon in sidebar header as per visual hierarchy? */
+      height: 30px;
+}
+
+/* Actually Figma Image 2 shows "Al-Maktab" with a bigger User Icon? 
+   The sidebar width is narrow. The icon is moderate.
+*/
+
+.profile-text {
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: bold;
+}
+
+.sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1rem;
+      gap: 1rem;
+}
+
+.sidebar-btn {
+      background-color: #556b5d;
+      /* Block color from Image 2 */
+      color: #ffffff;
+      padding: 0.8rem 1rem;
+      font-size: 1.2rem;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: bold;
+}
+
+.sidebar-btn:hover {
+      background-color: #6d8576;
+}
+
+/* Adjustments for text inside cards */
+@media (max-width: 400px) {
+      .card-text {
+            font-size: 1.8rem;
+      }
+
+      .page-title {
+            font-size: 2.2rem;
+      }
+}
