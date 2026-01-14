@@ -21,7 +21,8 @@
 <!-- Container for tree layout -->
 <div #treeContainer class="tree-container">
       <!-- Sizer for scrolling -->
-      <div class="zoom-sizer" [style.width.px]="treeWidth * zoomLevel" [style.height.px]="(treeHeight * zoomLevel)">
+      <div class="zoom-sizer" [style.width.px]="treeWidth * zoomLevel"
+            [style.height.px]="(treeHeight * zoomLevel) + verticalOffset">
 
             <!-- Zoomed Content -->
             <div [style.transform]="'scale(' + zoomLevel + ')'"

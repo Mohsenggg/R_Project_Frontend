@@ -298,9 +298,9 @@ export class TreeComponent implements OnInit {
       // ----------------- ZOOM & Scroll ----------------------
 
       zoomLevel: number = 1;
-      readonly MIN_ZOOM = 0.2;
+      readonly MIN_ZOOM = 0.02;
       readonly MAX_ZOOM = 2; // Adjusted for practical usage
-      readonly ZOOM_STEP = 0.2;
+      readonly ZOOM_STEP = 0.1;
 
       treeWidth: number = 0;
       treeHeight: number = 0;
@@ -310,7 +310,7 @@ export class TreeComponent implements OnInit {
             if (!this.familyTree.length) return;
 
             const isMobile = window.innerWidth <= 1000;
-            this.verticalOffset = isMobile ? 150 : 20;
+            this.verticalOffset = isMobile ? 100 : 20;
 
             let maxX = 0;
             let maxY = 0;
@@ -328,7 +328,7 @@ export class TreeComponent implements OnInit {
             traverse(this.familyTree);
 
             this.treeWidth = maxX + 400; // Adequate padding for cards width (160px) + margin
-            this.treeHeight = maxY + 400 + this.verticalOffset;
+            this.treeHeight = maxY + 400; // content height only
       }
 
       zoomIn(): void {
@@ -386,11 +386,10 @@ export class TreeComponent implements OnInit {
             // But with our wrapper approach, we calculate centers based on the scaled content size.
             setTimeout(() => {
                   const scaledWidth = this.treeWidth * this.zoomLevel;
-                  const scaledHeight = this.treeHeight * this.zoomLevel;
 
                   containerEl.scrollLeft = (scaledWidth - containerWidth) / 2;
                   containerEl.scrollTop = 0; // Align to top
-            });
+            }, 100);
       }
 
 
