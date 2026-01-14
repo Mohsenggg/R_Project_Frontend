@@ -3,7 +3,10 @@
       <!-- Tree Display Area -->
       <div class="tree-display" [attr.data-display-mode]="currentDisplay()" [style.width.px]="treeBounds().width"
             [style.height.px]="treeBounds().height">
-            <div class="sidebar-btn" routerLink="/tree">الـشـجرة الـكامـلة</div>
+            <div class="side-controls">
+                  <div class="side-btn" routerLink="/tree">الـشـجرة الـكامـلة</div>
+                  <div class="side-btn" routerLink="/home2">الصـفحة السابـقة</div>
+            </div>
 
             <!-- SVG Connections Layer -->
             <svg class="tree-connectors">
