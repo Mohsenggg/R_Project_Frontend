@@ -47,6 +47,11 @@ export class TreeComponent implements OnInit {
       childName: string = '';
       saveMessage = '';
 
+      // Orientation Guidance
+      isMobileLandscape: boolean = false;
+      showOrientationHint: boolean = false;
+      private readonly HINT_STORAGE_KEY = 'rahem_orientation_hint_seen';
+
 
       //============================||  Initialize ||============================
 
