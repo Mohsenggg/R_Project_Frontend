@@ -62,6 +62,7 @@ export class TreeComponent implements OnInit {
 
 
       ngOnInit() {
+            this.checkOrientation();
 
             this.treeService.loadTreeFromSupabase().then((tree) => {
                   this.familyTree = tree;
@@ -69,6 +70,27 @@ export class TreeComponent implements OnInit {
                   this.updateAllConnections(); // update lines after loading
 
             });
+      }
+
+      @HostListener('window:resize')
+      @HostListener('window:orientationchange')
+      checkOrientation(): void {
+            const isMobile = window.innerWidth <= 1024;
+            const isLandscape = window.innerHeight > window.innerWidth;
+
+            this.isMobileLandscape = isMobile && isLandscape;
+
+            if (this.isMobileLandscape) {
+                  const hasSeenHint = localStorage.getItem(this.HINT_STORAGE_KEY);
+                  this.showOrientationHint = !hasSeenHint;
+            } else {
+                  this.showOrientationHint = false;
+            }
+      }
+
+      closeOrientationHint(): void {
+            this.showOrientationHint = false;
+            localStorage.setItem(this.HINT_STORAGE_KEY, 'true');
       }
 
       onSave() {
