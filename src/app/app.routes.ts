@@ -8,11 +8,11 @@ import { HomeRahemComponent } from './features/intro/home/component/home-rahem/h
 export const routes: Routes = [
 
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
+      { path: 'home', component: HomeRahemComponent },
       { path: 'tree', component: TreeComponent },
 
       { path: 'vTree', component: ViewTreeComponent },
-      { path: 'home2', component: HomeRahemComponent },
+      { path: 'home2', component: HomeComponent },
 
 
 
