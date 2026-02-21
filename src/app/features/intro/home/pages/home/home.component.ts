@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TreeComponent } from "../../../../tree/classic-view/component/tree/tree.component";
+import { TreeComponent } from "../../../../tree/classic-view/pages/tree/tree.component";
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -1,0 +1,137 @@
+<div class="home-container" dir="rtl">
+      <!-- Header Section -->
+      <header class="main-header">
+            <!-- Logo First (Visual Right in RTL) -->
+            <div class="header-logo">
+                  <span class="logo-text">رحم</span>
+            </div>
+
+            <div class="header-center">
+                  <div class="al-imran-tab">ال عمران</div>
+            </div>
+
+            <!-- Menu Last (Visual Left in RTL) -->
+            <div class="menu-icon" (click)="toggleSidebar()">
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+            </div>
+      </header>
+
+      <!-- Sidebar Overlay -->
+      <div class="sidebar-backdrop" [class.visible]="isSidebarOpen" (click)="toggleSidebar()"></div>
+
+      <!-- Sidebar Menu -->
+      <aside class="sidebar-menu" [class.open]="isSidebarOpen">
+            <div class="sidebar-header">
+                  <div class="user-profile">
+                        <svg viewBox="0 0 24 24" class="profile-svg">
+                              <path fill="currentColor"
+                                    d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C17.43,14.91 14.86,13.5 12,13.5C9.14,13.5 6.57,14.91 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.58 7.58,4 12,4C16.42,4 20,7.58 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6A3.5,3.5 0 0,0 8.5,9.5A3.5,3.5 0 0,0 12,13A3.5,3.5 0 0,0 15.5,9.5A3.5,3.5 0 0,0 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
+                        </svg>
+                        <span class="user-text">المكتب الشخصي</span>
+                  </div>
+            </div>
+            <div class="sidebar-content">
+                  <ul class="sidebar-links">
+                        <li><button class="menu-btn" (click)="toggleSidebar()">فتح المكتب</button></li>
+                        <li><button class="menu-btn" (click)="toggleSidebar()">متابعة الطلبات</button></li>
+                        <li><button class="menu-btn" (click)="toggleSidebar()">انشاء منحة</button></li>
+                        <li><button class="menu-btn" (click)="toggleSidebar()">تقديم اقتراح</button></li>
+                        <li><button class="menu-btn" (click)="toggleSidebar()">تسجيل الخروج</button></li>
+                  </ul>
+            </div>
+      </aside>
+
+      <!-- Content Sections -->
+      <main class="content-scroll">
+            <!-- Status Placeholder Section -->
+            <section class="status-skeleton">
+                  <div class="skeleton-line full"></div>
+                  <div class="skeleton-line medium"></div>
+                  <div class="skeleton-line long"></div>
+                  <div class="skeleton-box"></div>
+                  <div class="skeleton-line long"></div>
+            </section>
+
+            <!-- Council Section -->
+            <section class="council-section">
+                  <!-- Tagline and Badge Header -->
+                  <div class="council-header">
+                        <span class="council-tagline">سيتم تفعيل المجلس عند انضمام 70 عضو</span>
+                        <div class="count-badge">
+                              <span>10+</span><br>
+                              <small>عضو</small>
+                        </div>
+                  </div>
+
+                  <!-- Interactive Row (Visual States) -->
+                  <div class="council-row">
+                        <div class="council-items">
+                              <div class="council-item inactive">
+                                    <span>مجلس</span>
+                              </div>
+                              <div class="council-item inactive">
+                                    <span>مجلس</span>
+                              </div>
+                        </div>
+
+                        <div class="council-item active">
+                              <div class="active-content">
+                                    <span class="sub-label">مجلس</span>
+                                    <span class="main-label">العائلة</span>
+                              </div>
+                        </div>
+                  </div>
+
+                  <!-- Base Line -->
+                  <div class="council-base-line"></div>
+            </section>
+
+            <!-- Interactive Icon Row -->
+            <section class="icon-row">
+                  <div class="connecting-line"></div>
+                  <div class="icon-circles">
+                        <div class="circle-btn gold" [routerLink]="['/tree']">
+                              <img src="assets/images/treeIcon.png" alt="Tree">
+                        </div>
+                        <div class="circle-btn dark" [routerLink]="['/vTree']">
+                              <img src="assets/images/societyIcon.png" alt="Society">
+                        </div>
+                        <div class="circle-btn dark">
+                              <img src="assets/images/icons8-money-100.png" alt="Money">
+                        </div>
+                  </div>
+            </section>
+
+            <!-- Tree Card Section -->
+            <section class="action-section">
+                  <div class="tree-card" [routerLink]="['/tree']">
+                        <div class="card-badge"><span>{{ nodeCount() }}+</span><br><small>فرد</small></div>
+                        <div class="card-content">
+                              <span class="card-title">العائلة</span>
+                              <span class="card-name">شجـرة</span>
+                        </div>
+                        <div class="card-icon">
+                              <img src="assets/images/treeIcon.png" alt="Tree">
+                        </div>
+                  </div>
+            </section>
+      </main>
+
+      <!-- Navigation/Footer Section -->
+      <footer class="main-footer">
+            <div class="scroll-top">
+                  <div class="double-arrow"></div>
+            </div>
+            <div class="footer-links">
+                  <div class="download-app">
+                        <img src="assets/images/icons8-google-play-100.png" alt="Play">
+                        <span>حمل التطبيق</span>
+                  </div>
+                  <div class="copyright">
+                        <span>جميع الحقوق محفوظة - رحم ®</span>
+                  </div>
+            </div>
+      </footer>
+</div>
