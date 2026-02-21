@@ -4,7 +4,9 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
 
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'login', loadComponent: () => import('./features/auth/pages/login/login.component').then(c => c.LoginComponent) },
+      { path: 'register', loadComponent: () => import('./features/auth/pages/register/register.component').then(c => c.RegisterComponent) },
       { path: 'home', loadComponent: () => import('./features/intro/home/pages/home-rahem/home-rahem.component').then(c => c.HomeRahemComponent) },
       { path: 'tree', loadComponent: () => import('./features/tree/classic-view/pages/tree/tree.component').then(c => c.TreeComponent) },
 
