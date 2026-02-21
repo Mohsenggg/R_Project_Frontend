@@ -59,27 +59,26 @@
                   <!-- Tagline and Badge Header -->
                   <div class="council-header">
                         <span class="council-tagline">سيتم تفعيل المجلس عند انضمام 70 عضو</span>
-                        <div class="count-badge">
-                              <span>10+</span><br>
-                              <small>عضو</small>
-                        </div>
                   </div>
 
                   <!-- Interactive Row (Visual States) -->
                   <div class="council-row">
+                        <div class="council-item active">
+                              <div class="count-badge">
+                                    <span class="badge-number">10+</span>
+                                    <span class="badge-text">عضو</span>
+                              </div>
+                              <div class="active-content">
+                                    <span class="sub-label">مجلس</span>
+                                    <span class="main-label">العائلة</span>
+                              </div>
+                        </div>
                         <div class="council-items">
                               <div class="council-item inactive">
                                     <span>مجلس</span>
                               </div>
                               <div class="council-item inactive">
                                     <span>مجلس</span>
-                              </div>
-                        </div>
-
-                        <div class="council-item active">
-                              <div class="active-content">
-                                    <span class="sub-label">مجلس</span>
-                                    <span class="main-label">العائلة</span>
                               </div>
                         </div>
                   </div>
@@ -92,28 +91,31 @@
             <section class="icon-row">
                   <div class="connecting-line"></div>
                   <div class="icon-circles">
-                        <div class="circle-btn gold" [routerLink]="['/tree']">
-                              <img src="assets/images/treeIcon.png" alt="Tree">
-                        </div>
-                        <div class="circle-btn dark" [routerLink]="['/vTree']">
-                              <img src="assets/images/societyIcon.png" alt="Society">
-                        </div>
                         <div class="circle-btn dark">
                               <img src="assets/images/icons8-money-100.png" alt="Money">
+                        </div>
+                        <div class="circle-btn gold">
+                              <img src=" assets/images/treeIcon.png" alt="Tree">
+                        </div>
+                        <div class="circle-btn dark">
+                              <img src="assets/images/societyIcon.png" alt="Society">
                         </div>
                   </div>
             </section>
 
             <!-- Tree Card Section -->
             <section class="action-section">
-                  <div class="tree-card" [routerLink]="['/tree']">
-                        <div class="card-badge"><span>{{ nodeCount() }}+</span><br><small>فرد</small></div>
-                        <div class="card-content">
-                              <span class="card-title">العائلة</span>
-                              <span class="card-name">شجـرة</span>
+                  <div class="tree-card" [routerLink]="['/vTree']">
+                        <div class="card-badge">
+                              <span class="badge-number">{{ nodeCount() }}+</span>
+                              <span class="badge-text">فرد</span>
                         </div>
                         <div class="card-icon">
                               <img src="assets/images/treeIcon.png" alt="Tree">
+                        </div>
+                        <div class="card-content">
+                              <span class="card-name">شجرة</span>
+                              <span class="card-title">العائلة</span>
                         </div>
                   </div>
             </section>

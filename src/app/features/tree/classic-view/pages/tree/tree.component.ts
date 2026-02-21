@@ -6,8 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FamilyMember } from '../../../../../core/model/interface/FamilyMember';
-import { TreeService } from '../../../../../core/srevices/tree.service';
+import { TreeService } from '../../../dynamic-view/service/data-access/tree.service';
+import { FamilyMember } from '../../../dynamic-view/model/interface/family-member.interface';
 
 @Component({
       selector: 'app-tree',

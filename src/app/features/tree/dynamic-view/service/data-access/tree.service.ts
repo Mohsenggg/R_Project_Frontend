@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FamilyMember } from '../model/interface/FamilyMember';
+import { FamilyMember } from '../../model/interface/family-member.interface';
 // import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
